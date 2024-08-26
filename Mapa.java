@@ -17,6 +17,7 @@ public class Mapa {
 
     public ArrayList<Peligro> getPeligrosCercanos(double latitud, double longitud, double rango) {
         ArrayList<Peligro> peligrosCercanos = new ArrayList<>();
+        double rango = 300.0
         for (Peligro p : peligros) {
             if (distancia(p.getLatitud(), p.getLongitud(), latitud, longitud) <= rango) {
                 peligrosCercanos.add(p);
