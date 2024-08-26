@@ -20,6 +20,7 @@ public class Mapa {
         for (Peligro p : peligros) {
             if (distancia(p.getLatitud(), p.getLongitud(), latitud, longitud) <= rango) {
                 peligrosCercanos.add(p);
+                System.out.println("Se encontró un nuevo peligro cerca.");
             }
         }
         return peligrosCercanos;
