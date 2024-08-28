@@ -15,21 +15,24 @@ public class Usuario {
         return nombre;
     }
 
+    public void setNombre(String nombre){
+        return nombre;
+    }
+    
     public String getEmail() {
         return email;
     }
 
+    public void setEmail(String email){
+        this.email = email;
+    }
+    
     public int getPuntos() {
         return puntos;
     }
 
-    public void agregarPuntos(int puntos) {
-        this.puntos += puntos;
-    }
-
-    public void reportarPeligro(Mapa mapa, Peligro peligro) {
-        mapa.agregarPeligro(peligro);
-        this.agregarPuntos(10); // por ejemplo, 10 puntos por cada reporte
+    public void setPuntos(int puntos) {
+        this.puntos = puntos;
     }
 
     public void agregarPuntos(int puntos, Peligro peligro, Mapa mapa){
@@ -39,5 +42,10 @@ public class Usuario {
         } else {
             reportarPeligro.put(agregarPuntos, 10); //si el usuario no tiene puntos, el valor de "puntos" es 10.
         }
+    }
+
+    public void reportarPeligro(Mapa mapa, Peligro peligro) {
+        mapa.agregarPeligro(peligro);
+        this.agregarPuntos(10); // por ejemplo, 10 puntos por cada reporte
     }
 }
