@@ -4,6 +4,8 @@ public class Peligro {
     private double latitud;
     private double longitud;
     private boolean reparado;
+    private int gravedad;
+    private int calificacion;
 
     public Peligro(String tipo, String descripcion, double latitud, double longitud) {
         this.tipo = tipo;
@@ -11,6 +13,8 @@ public class Peligro {
         this.latitud = latitud;
         this.longitud = longitud;
         this.reparado = false;
+        this.gravedad = gravedad;
+        this.calificacion = 0;
     }
 
     public String getTipo() {
@@ -29,6 +33,10 @@ public class Peligro {
         return longitud;
     }
 
+    public int getGravedad() {
+        return gravedad;
+    }
+
     public boolean isReparado() {
         return reparado;
     }
@@ -36,4 +44,16 @@ public class Peligro {
     public void setReparado(boolean reparado) {
         this.reparado = reparado;
     }
-}
+
+    public int getCalificacion() {
+        return calificacion
+    }
+
+    public void setCalificacion(int calificacion) {
+        if (reparado) {
+            this.calificacion = calificacion;
+        } else {
+            System.out.println("El peligro aún no ha sido reparado");
+        }
+    }
+} 
