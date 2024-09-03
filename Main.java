@@ -83,5 +83,25 @@ public class Main {
             }
         }
     }
+
+    private static void calificarReparacion(Mapa mapa, Scanner scanner) {
+        System.out.println("Peligros disponibles para calificar:");
+
+        ArrayList<Peligro> peligros = mapa.getPeligros();
+        for (int i = 0; i < peligros.size(); i++) {
+            Peligro p = peligros.get(i);
+            if (p.isReparado()) {
+                System.out.println((i + 1) + ". Tipo: " + p.getTipo() + ", Descripción: " + p.getDescripcion());
+            }
+        }
+
+        System.out.print("Seleccione el número del peligro que desea calificar: ");
+        int seleccion = scanner.nextInt();
+        scanner.nextLine(); // Consumir la nueva línea
+
+        if (seleccion < 1 || seleccion > peligros.size() || !peligros.get(seleccion - 1).isReparado()) {
+            System.out.println("Selección inválida.");
+            return;
+        }
 }
 
