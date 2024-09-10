@@ -9,10 +9,15 @@ public class MainGUI extends JFrame {
     private JComboBox<String> peligrosComboBox;
     private JButton calificarButton;
     private JTextField calificacionField;
+    private JTextField tipoField;
+    private JTextField descripcionField;
+    private JTextField latitudField;
+    private JTextField longitudField;
+    private JTextArea peligrosTextArea;
 
     public MainGUI(Mapa mapa) {
         this.mapa = mapa;
-        setTitle("Calificar Reparación de Peligros");
-        setSize(400, 200);
+        setTitle("Aplicación de Peligros");
+        setSize(500, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
