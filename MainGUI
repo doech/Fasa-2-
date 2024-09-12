@@ -21,3 +21,34 @@ public class MainGUI extends JFrame {
         setSize(500, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+
+        //interfaz para registrar peligros
+        JPanel panelRegistro = new JPanel(new GridLayout(5, 2));
+        panelRegistro.setBorder(BorderFactory.createTitledBorder("Registrar Peligro"));
+
+        panelRegistro.add(new JLabel("Tipo de peligro:"));
+        tipoField = new JTextField(15);
+        panelRegistro.add(tipoField);
+
+        panelRegistro.add(new JLabel("Descripción:"));
+        descripcionField = new JTextField(15);
+        panelRegistro.add(descripcionField);
+
+        panelRegistro.add(new JLabel("Latitud:"));
+        latitudField = new JTextField(15);
+        panelRegistro.add(latitudField);
+
+        panelRegistro.add(new JLabel("Longitud:"));
+        longitudField = new JTextField(15);
+        panelRegistro.add(longitudField);
+
+        JButton registrarPeligroButton = new JButton("Registrar Peligro");
+        registrarPeligroButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                registrarPeligro();
+            }
+        });
+        panelRegistro.add(new JLabel()); // Para ocupar espacio
+        panelRegistro.add(registrarPeligroButton);
+
