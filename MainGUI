@@ -49,6 +49,6 @@ public class MainGUI extends JFrame {
                 registrarPeligro();
             }
         });
-        panelRegistro.add(new JLabel()); // Para ocupar espacio
+        panelRegistro.add(new JLabel()); 
         panelRegistro.add(registrarPeligroButton);
 
