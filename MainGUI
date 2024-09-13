@@ -52,3 +52,23 @@ public class MainGUI extends JFrame {
         panelRegistro.add(new JLabel()); 
         panelRegistro.add(registrarPeligroButton);
 
+        //mostrar peligros cercanos
+        JPanel panelDeteccion = new JPanel(new BorderLayout());
+        panelDeteccion.setBorder(BorderFactory.createTitledBorder("Detectar Peligro Cercano"));
+        peligrosTextArea = new JTextArea(10, 40);
+        peligrosTextArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(peligrosTextArea);
+
+        JPanel panelDeteccionInputs = new JPanel(new GridLayout(3, 2));
+        JTextField latitudDeteccionField = new JTextField(10);
+        JTextField longitudDeteccionField = new JTextField(10);
+        JTextField rangoDeteccionField = new JTextField(10);
+
+        panelDeteccionInputs.add(new JLabel("Latitud:"));
+        panelDeteccionInputs.add(latitudDeteccionField);
+        panelDeteccionInputs.add(new JLabel("Longitud:"));
+        panelDeteccionInputs.add(longitudDeteccionField);
+        panelDeteccionInputs.add(new JLabel("Rango:"));
+        panelDeteccionInputs.add(rangoDeteccionField);
+
+        JButton detectarPeligroButton = new JButton("Detectar Peligro");
