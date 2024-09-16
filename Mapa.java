@@ -29,4 +29,15 @@ public class Mapa {
         // Método para calcular la distancia entre dos puntos geográficos
         return Math.sqrt(Math.pow(lat2 - lat1, 2) + Math.pow(lon2 - lon1, 2));
     }
+
+    public void agregarPeligro(Peligro peligro) {
+    if (peligro != null) {
+        peligros.add(peligro);
+        System.out.println("Peligro agregado: " + peligro.getTipo());
+    } else {
+        System.out.println("El peligro no puede ser nulo.");
+    }
+    }
+
+    
 }
