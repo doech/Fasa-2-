@@ -1,3 +1,5 @@
+import java.util.Map;
+
 public class Usuario {
     private String nombre;
     private String email;
@@ -13,16 +15,33 @@ public class Usuario {
         return nombre;
     }
 
+    public void setNombre(String nombre){
+        return nombre;
+    }
+    
     public String getEmail() {
         return email;
     }
 
+    public void setEmail(String email){
+        this.email = email;
+    }
+    
     public int getPuntos() {
         return puntos;
     }
 
-    public void agregarPuntos(int puntos) {
-        this.puntos += puntos;
+    public void setPuntos(int puntos) {
+        this.puntos = puntos;
+    }
+
+    public void agregarPuntos(int puntos, Peligro peligro, Mapa mapa){
+        if (reportarPeligro.get(reportarPeligro) != null) {
+            int puntos = reportarPeligro.get(reportarPeligro);
+            reportarPeligro.put(agregarPuntos, puntos + 10); //agrega 10 puntos al usuario por reportar el peligro.
+        } else {
+            reportarPeligro.put(agregarPuntos, 10); //si el usuario no tiene puntos, el valor de "puntos" es 10.
+        }
     }
 
     public void reportarPeligro(Mapa mapa, Peligro peligro) {
