@@ -56,4 +56,16 @@ public class Peligro {
             System.out.println("El peligro aún no ha sido reparado");
         }
     }
+
+    private boolean reparado;
+
+    public void setReparado(boolean reparado) {
+        this.reparado = reparado;
+        if (reparado) {
+            System.out.println("Peligro marcado como reparado.");
+        } else {
+            System.out.println("Peligro aún sin reparar.");
+    }
+}
+
 } 
