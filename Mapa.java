@@ -58,7 +58,35 @@ public class Mapa {
                 System.out.println("Opción inválida. Seleccionando longitud por defecto (Bajo)");
                 peligro.setLongitud("Bajo");
                 break;
-        }
+            }
+        System.out.println("Seleccione la latitud del peligro: ");
+        System.out.println("1. Norte");
+        System.out.println("2. Sur");
+        System.out.println("3. Este");
+        System.out.println("4. Oeste");
+        int ocpcionLat = scan.nextInt();
+        switch(opcionLat){
+            case 1:
+                peligro.setLatitud("Norte");
+                break;
+            case 2:
+                peligro.setLatitud("Sur");
+                break;
+            case 3:
+                peligro.setLatitud("Este");
+                break;
+            case 4:
+                peligro.setLatitud("Oeste");
+                break;
+            default;
+                System.out.println("Opcion inválida. Seleccionando longitud por defecto (Norte)");
+                peligro.setLatitud("Norte");
+                break;
+            }
+        //Actualizar lista de peligros.
+        
+    }
+        
         
         peligros.add(peligro);
         System.out.println("Peligro agregado: " + peligro.getTipo());
