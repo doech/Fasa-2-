@@ -72,3 +72,17 @@ public class MainGUI extends JFrame {
         panelDeteccionInputs.add(rangoDeteccionField);
 
         JButton detectarPeligroButton = new JButton("Detectar Peligro");
+        detectarPeligroButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                double latitud = Double.parseDouble(latitudDeteccionField.getText());
+                double longitud = Double.parseDouble(longitudDeteccionField.getText());
+                double rango = Double.parseDouble(rangoDeteccionField.getText());
+                detectarPeligroCercano(latitud, longitud, rango);
+            }
+        });
+        panelDeteccion.add(panelDeteccionInputs, BorderLayout.NORTH);
+        panelDeteccion.add(scrollPane, BorderLayout.CENTER);
+        panelDeteccion.add(detectarPeligroButton, BorderLayout.SOUTH);
+
+        
