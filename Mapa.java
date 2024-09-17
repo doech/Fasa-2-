@@ -44,7 +44,21 @@ public class Mapa {
         System.out.println("No hay peligros registrados.");
     }
     return peligros;
-}
+    }
+
+    public ArrayList<Peligro> getPeligrosCercanos(double latitud, double longitud, double rango) {
+    ArrayList<Peligro> peligrosCercanos = new ArrayList<>();
+    for (Peligro p : peligros) {
+        if (distancia(p.getLatitud(), p.getLongitud(), latitud, longitud) <= rango) {
+            peligrosCercanos.add(p);
+        }
+    }
+    if (peligrosCercanos.isEmpty()) {
+        System.out.println("No se encontraron peligros cercanos.");
+    }
+    return peligrosCercanos;
+    }
+
 
 
     
