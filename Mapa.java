@@ -38,7 +38,27 @@ public class Mapa {
         String tipoPeligro = scan.next();
         System.out.println("Escriba una breve descripcion del peligro: ");
         String descripcionPeligro = scan.next();
-        //Agregar latitud, longitud y gravedad con opciones predeterminadas.
+        //Determinar la longitud del peligro.
+        System.out.println("Seleccione la longitud del peligro: ");
+        System.out.println("1. Bajo (menos de 10 metros)");
+        System.out.println("2. Medio (entre 10 y 50 metros)");
+        System.out.println("3. Alto (más de 50 metros)");
+        int opcion = scan.nextInt();
+        switch(opcion){
+            case 1:
+                peligro.setLongitud("Bajo");
+                break;
+            case 2:
+                peligro.setLongitud("Medio");
+                break;
+            case 3;
+                peligro.setLongitud("Alto");
+                break;
+            default;
+                System.out.println("Opción inválida. Seleccionando longitud por defecto (Bajo)");
+                peligro.setLongitud("Bajo");
+                break;
+        }
         
         peligros.add(peligro);
         System.out.println("Peligro agregado: " + peligro.getTipo());
