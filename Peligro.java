@@ -68,4 +68,11 @@ public class Peligro {
     }
 }
 
+    private int calificacion;
+
+    public int getCalificacion() {
+        return calificacion;
+}
+
+
 } 
