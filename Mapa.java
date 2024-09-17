@@ -39,5 +39,13 @@ public class Mapa {
     }
     }
 
+    public ArrayList<Peligro> getPeligros() {
+    if (peligros.isEmpty()) {
+        System.out.println("No hay peligros registrados.");
+    }
+    return peligros;
+}
+
+
     
 }
