@@ -85,4 +85,99 @@ public class MainGUI extends JFrame {
         panelDeteccion.add(scrollPane, BorderLayout.CENTER);
         panelDeteccion.add(detectarPeligroButton, BorderLayout.SOUTH);
 
+        // calificar reparaciones
+        JPanel panelCalificacion = new JPanel(new GridLayout(3, 1));
+        panelCalificacion.setBorder(BorderFactory.createTitledBorder("Calificar Reparación"));
+
+        peligrosComboBox = new JComboBox<>();
+        calificacionField = new JTextField(10);
+        calificarButton = new JButton("Calificar Reparación");
+
+        calificarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                calificarReparacion();
+            }
+        });
+
+        panelCalificacion.add(new JLabel("Seleccionar peligro:"));
+        panelCalificacion.add(peligrosComboBox);
+        panelCalificacion.add(calificarButton);
+
+        // configuración ventana principal
+        JPanel mainPanel = new JPanel(new GridLayout(3, 1));
+        mainPanel.add(panelRegistro);
+        mainPanel.add(panelDeteccion);
+        mainPanel.add(panelCalificacion);
+
+        add(mainPanel, BorderLayout.CENTER);
+
+        // actualizar los peligros reparados
+        actualizarPeligrosReparados();
+    }
+
+    // registrar un peligro
+    private void registrarPeligro() {
+        String tipo = tipoField.getText();
+        String descripcion = descripcionField.getText();
+        double latitud = Double.parseDouble(latitudField.getText());
+        double longitud = Double.parseDouble(longitudField.getText());
+
+        Peligro nuevoPeligro = new Peligro(tipo, descripcion, latitud, longitud);
+        mapa.agregarPeligro(nuevoPeligro);
+
+        JOptionPane.showMessageDialog(this, "Peligro registrado exitosamente.");
+        tipoField.setText("");
+        descripcionField.setText("");
+        latitudField.setText("");
+        longitudField.setText("");
+    }
+
+    // detectar peligros cercanos
+    private void detectarPeligroCercano(double latitud, double longitud, double rango) {
+        ArrayList<Peligro> peligrosCercanos = mapa.getPeligrosCercanos(latitud, longitud, rango);
+        peligrosTextArea.setText("");  // Limpiar el área de texto
+
+        if (peligrosCercanos.isEmpty()) {
+            peligrosTextArea.append("No se encontraron peligros cercanos.\n");
+        } else {
+            for (Peligro p : peligrosCercanos) {
+                peligrosTextArea.append("Tipo: " + p.getTipo() +
+                        ", Gravedad: " + p.getGravedad() +
+                        ", Ubicación: (" + p.getLatitud() + ", " + p.getLongitud() + ")\n");
+            }
+        }
+    }
+
+    // calificar una reparación
+    private void calificarReparacion() {
+        String seleccion = (String) peligrosComboBox.getSelectedItem();
+        if (seleccion != null) {
+            JOptionPane.showMessageDialog(this, "Has calificado la reparación de: " + seleccion);
+            // Aquí puedes implementar la lógica para manejar la calificación real
+        } else {
+            JOptionPane.showMessageDialog(this, "No hay peligros seleccionados.");
+        }
+    }
+
+    // actualizar con peligros reparados metodo
+    private void actualizarPeligrosReparados() {
+        peligrosComboBox.removeAllItems();
+        ArrayList<Peligro> peligros = mapa.getPeligros();
+        for (Peligro p : peligros) {
+            if (p.isReparado()) {
+                peligrosComboBox.addItem(p.getTipo() + ": " + p.getDescripcion());
+            }
+        }
+    }
+
+    //main para iniciar la aplicación gráfica
+    public static void main(String[] args) {
+        Mapa mapa = new Mapa();
+        MainGUI mainGUI = new MainGUI(mapa);
+        mainGUI.setVisible(true);
+    }
+}
+
+//revisar reducir lineas
         
