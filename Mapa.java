@@ -1,7 +1,9 @@
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Mapa {
     private ArrayList<Peligro> peligros;
+    public Scanner scan;
 
     public Mapa() {
         this.peligros = new ArrayList<>();
@@ -32,6 +34,12 @@ public class Mapa {
 
     public void agregarPeligro(Peligro peligro) {
     if (peligro != null) {
+        System.out.println("Ingrese el tipo de Peligro: ");
+        String tipoPeligro = scan.next();
+        System.out.println("Escriba una breve descripcion del peligro: ");
+        String descripcionPeligro = scan.next();
+        //Agregar latitud, longitud y gravedad con opciones predeterminadas.
+        
         peligros.add(peligro);
         System.out.println("Peligro agregado: " + peligro.getTipo());
     } else {
