@@ -84,7 +84,7 @@ public class Mapa {
                 break;
             }
         //Actualizar lista de peligros.
-        
+        agregarPeligro(peligro);
     }
         
         
