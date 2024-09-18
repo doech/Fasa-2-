@@ -74,5 +74,19 @@ public class Peligro {
         return calificacion;
 }
 
+    public void setCalificacion(int calificacion) {
+    if (reparado) {
+        if (calificacion >= 0 && calificacion <= 5) {
+            this.calificacion = calificacion;
+            System.out.println("Calificación registrada: " + calificacion);
+        } else {
+            System.out.println("La calificación debe estar entre 0 y 5.");
+        }
+    } else {
+        System.out.println("El peligro aún no ha sido reparado.");
+    }
+}
+
+
 
 } 
