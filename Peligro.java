@@ -46,6 +46,10 @@ public class Peligro {
 
     public void setReparado(boolean reparado) {
         this.reparado = reparado;
+        this.reparado = reparado;
+        if (!reparado) {
+                this.calificacion = 0;
+        }
     }
 
     public int getCalificacion() {
