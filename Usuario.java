@@ -22,7 +22,11 @@ public class Usuario {
     }
 
     public void agregarPuntos(int puntos) {
-        this.puntos += puntos;
+        if (puntos > 0){
+            this.puntos += puntos;
+        } else{
+            System.out.println("No se pueden añadir puntos negativos");
+        }
         if (reportarPeligro.get(reportarPeligro) != null) {
             int puntos = reportarPeligro.get(reportarPeligro);
             reportarPeligro.put(agregarPuntos, puntos + 10); //agrega 10 puntos al usuario por reportar el peligro.
