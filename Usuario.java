@@ -39,4 +39,19 @@ public class Usuario {
         mapa.agregarPeligro(peligro);
         this.agregarPuntos(10); // por ejemplo, 10 puntos por cada reporte
     }
+
+    // Validación de email y actualización
+    public boolean esEmailValido(String email) {
+    return email.contains("@") && email.contains(".");
+    }
+
+    public void actualizarEmail(String nuevoEmail) {
+    if (esEmailValido(nuevoEmail)) {
+        this.email = nuevoEmail;
+        System.out.println("Email actualizado a: " + nuevoEmail);
+        } else {
+        System.out.println("El email proporcionado no es válido.");
+    }
+    }
+
 }
