@@ -137,6 +137,20 @@ public class Mapa {
     }
 
 
+    public void mostrarPeligros() {
+        if (peligros.isEmpty()) {
+            System.out.println("No hay peligros registrados.");
+        } else {
+            System.out.println("Peligros registrados:");
+            for (Peligro p : peligros) {
+                System.out.println("Tipo: " + p.getTipo() + ", Descripción: " + p.getDescripcion() + 
+                                   ", Latitud: " + p.getLatitud() + ", Longitud: " + p.getLongitud());
+            }
+        }
+    }
+
+
+
 
     
 }
