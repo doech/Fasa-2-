@@ -13,7 +13,7 @@ public class Peligro {
         this.latitud = latitud;
         this.longitud = longitud;
         this.reparado = false;
-        this.gravedad = gravedad;
+        setGravedad(gravedad);
         this.calificacion = 0;
     }
 
@@ -33,8 +33,11 @@ public class Peligro {
         return longitud;
     }
 
-    public int getGravedad() {
-        return gravedad;
+    public void setGravedad(int gravedad) {
+    if (gravedad < 1 || gravedad > 5) {
+        throw new IllegalArgumentException("La gravedad debe estar entre 1 y 5.");
+    }
+    this.gravedad = gravedad;
     }
 
     public boolean isReparado() {
