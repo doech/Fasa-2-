@@ -61,8 +61,6 @@ public class Peligro {
         }
     }
 
-    private boolean reparado;
-
     public void setReparado(boolean reparado) {
         this.reparado = reparado;
         if (reparado) {
@@ -71,8 +69,6 @@ public class Peligro {
             System.out.println("Peligro aún sin reparar.");
     }
 }
-
-    private int calificacion;
 
     public int getCalificacion() {
         return calificacion;
