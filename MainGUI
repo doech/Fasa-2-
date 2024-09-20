@@ -105,10 +105,12 @@ public class MainGUI extends JFrame {
         panelCalificacion.add(calificarButton);
 
         // configuración ventana principal
-        JPanel mainPanel = new JPanel(new GridLayout(3, 1));
-        mainPanel.add(panelRegistro);
-        mainPanel.add(panelDeteccion);
-        mainPanel.add(panelCalificacion);
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.addTab("Registrar Peligro", panelRegistro);
+        tabbedPane.addTab("Detectar Peligros Cercanos", panelDeteccion);
+        tabbedPane.addTab("Calificar Reparación", panelCalificacion);
+
+add(tabbedPane, BorderLayout.CENTER);
 
         add(mainPanel, BorderLayout.CENTER);
 
