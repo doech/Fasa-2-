@@ -95,6 +95,11 @@ public class Mapa {
     }
     }
 
+    public void eliminarPeligro(Peligro peligro) {
+        peligros.remove(peligro);
+    }
+
+
     public ArrayList<Peligro> getPeligros() {
     if (peligros.isEmpty()) {
         System.out.println("No hay peligros registrados.");
