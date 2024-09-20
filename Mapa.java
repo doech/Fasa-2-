@@ -132,6 +132,25 @@ public class Mapa {
     }
 
 
+    public boolean peligroYaAgregado(Peligro peligro) {
+        for (Peligro p : peligros) {
+            if (p.getLatitud() == peligro.getLatitud() && p.getLongitud() == peligro.getLongitud()) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    // Actualización en el método agregarPeligro para evitar duplicados
+    public void agregarPeligro(Peligro peligro) {
+        if (!peligroYaAgregado(peligro)) {
+            peligros.add(peligro);
+            System.out.println("Peligro agregado: " + peligro.getTipo());
+        } else {
+            System.out.println("El peligro ya está registrado en esta ubicación.");
+        }
+    }
+
 
 
     
