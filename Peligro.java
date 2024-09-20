@@ -7,7 +7,7 @@ public class Peligro {
     private int gravedad;
     private int calificacion;
 
-    public Peligro(String tipo, String descripcion, double latitud, double longitud) {
+    public Peligro(String tipo, String descripcion, double latitud, double longitud, int gravedad) {
         this.tipo = tipo;
         this.descripcion = descripcion;
         this.latitud = latitud;
@@ -51,8 +51,12 @@ public class Peligro {
 
     public void setCalificacion(int calificacion) {
         if (reparado) {
-            this.calificacion = calificacion;
-        } else {
+           if (calificacion >= 1 && calificacion <= 5){
+               this.calificacion = calificacion;
+           } else{
+               System.out.println("La calificación debe estar entre 1 y 5");
+           }
+        } else{
             System.out.println("El peligro aún no ha sido reparado");
         }
     }
