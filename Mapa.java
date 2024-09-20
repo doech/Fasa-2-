@@ -149,6 +149,21 @@ public class Mapa {
         }
     }
 
+    
+    public void actualizarPeligro(Peligro peligro, String nuevoTipo, String nuevaDescripcion, int nuevaGravedad) {
+        for (Peligro p : peligros) {
+            if (p.getLatitud() == peligro.getLatitud() && p.getLongitud() == peligro.getLongitud()) {
+                p.setTipo(nuevoTipo);
+                p.setDescripcion(nuevaDescripcion);
+                p.setGravedad(nuevaGravedad);
+                System.out.println("Peligro actualizado: " + nuevoTipo);
+                return;
+            }
+        }
+        System.out.println("Peligro no encontrado.");
+    }
+
+
 
 
 
