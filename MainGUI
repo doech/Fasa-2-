@@ -49,7 +49,7 @@ public class MainGUI extends JFrame {
                 registrarPeligro();
             }
         });
-        panelRegistro.add(new JLabel()); 
+        panelRegistro.add(new JLabel());
         panelRegistro.add(registrarPeligroButton);
 
         //mostrar peligros cercanos
@@ -75,10 +75,14 @@ public class MainGUI extends JFrame {
         detectarPeligroButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                double latitud = Double.parseDouble(latitudDeteccionField.getText());
-                double longitud = Double.parseDouble(longitudDeteccionField.getText());
-                double rango = Double.parseDouble(rangoDeteccionField.getText());
-                detectarPeligroCercano(latitud, longitud, rango);
+                try {
+                    double latitud = Double.parseDouble(latitudDeteccionField.getText());
+                    double longitud = Double.parseDouble(longitudDeteccionField.getText());
+                    double rango = Double.parseDouble(rangoDeteccionField.getText());
+                    detectarPeligroCercano(latitud, longitud, rango);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(MainGUI.this, "Introduce valores numéricos válidos para latitud, longitud y rango.", "Error de entrada", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
         panelDeteccion.add(panelDeteccionInputs, BorderLayout.NORTH);
@@ -110,29 +114,31 @@ public class MainGUI extends JFrame {
         tabbedPane.addTab("Detectar Peligros Cercanos", panelDeteccion);
         tabbedPane.addTab("Calificar Reparación", panelCalificacion);
 
-add(tabbedPane, BorderLayout.CENTER);
-
-        add(mainPanel, BorderLayout.CENTER);
+        add(tabbedPane, BorderLayout.CENTER);
 
         // actualizar los peligros reparados
         actualizarPeligrosReparados();
     }
 
-    // registrar un peligro
+    // registrar un peligro con validación
     private void registrarPeligro() {
-        String tipo = tipoField.getText();
-        String descripcion = descripcionField.getText();
-        double latitud = Double.parseDouble(latitudField.getText());
-        double longitud = Double.parseDouble(longitudField.getText());
+        try {
+            String tipo = tipoField.getText();
+            String descripcion = descripcionField.getText();
+            double latitud = Double.parseDouble(latitudField.getText());
+            double longitud = Double.parseDouble(longitudField.getText());
 
-        Peligro nuevoPeligro = new Peligro(tipo, descripcion, latitud, longitud);
-        mapa.agregarPeligro(nuevoPeligro);
+            Peligro nuevoPeligro = new Peligro(tipo, descripcion, latitud, longitud);
+            mapa.agregarPeligro(nuevoPeligro);
 
-        JOptionPane.showMessageDialog(this, "Peligro registrado exitosamente.");
-        tipoField.setText("");
-        descripcionField.setText("");
-        latitudField.setText("");
-        longitudField.setText("");
+            JOptionPane.showMessageDialog(this, "Peligro registrado exitosamente.");
+            tipoField.setText("");
+            descripcionField.setText("");
+            latitudField.setText("");
+            longitudField.setText("");
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Introduce valores numéricos válidos para latitud y longitud.", "Error de entrada", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     // detectar peligros cercanos
@@ -180,6 +186,3 @@ add(tabbedPane, BorderLayout.CENTER);
         mainGUI.setVisible(true);
     }
 }
-
-//revisar reducir lineas
-        
