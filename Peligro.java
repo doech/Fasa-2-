@@ -6,8 +6,9 @@ public class Peligro {
     private boolean reparado;
     private int gravedad;
     private int calificacion;
+    private String carril;
 
-    public Peligro(String tipo, String descripcion, double latitud, double longitud, int gravedad) {
+    public Peligro(String tipo, String descripcion, double latitud, double longitud, int gravedad, String carril) {
         this.tipo = tipo;
         this.descripcion = descripcion;
         this.latitud = latitud;
@@ -15,6 +16,7 @@ public class Peligro {
         this.reparado = false;
         setGravedad(gravedad);
         this.calificacion = 0;
+        setCarril(carril);
     }
 
     public String getTipo() {
@@ -38,6 +40,18 @@ public class Peligro {
         throw new IllegalArgumentException("La gravedad debe estar entre 1 y 5.");
     }
     this.gravedad = gravedad;
+    }
+
+    public String getCarril() {
+        return carril;
+    }
+
+    public void setCarril(String carril) {
+        if (carril.equalsIgnoreCase("izquierdo") || carril.equalsIgnoreCase("derecho")) {
+            this.carril = carril;
+        } else {
+            throw new IllegalArgumentException("El carril debe ser 'izquierdo' o 'derecho'.");
+        }
     }
 
     public boolean isReparado() {
