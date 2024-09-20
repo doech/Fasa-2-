@@ -54,4 +54,23 @@ public class Usuario {
     }
     }
 
+        // Sistema de niveles basado en puntos
+    public String getNivel() {
+        if (puntos < 100) {
+            return "Principiante";
+        } else if (puntos < 500) {
+            return "Intermedio";
+        } else {
+            return "Experto";
+        }
+    }
+    
+    public void mostrarDetallesUsuario() {
+        System.out.println("Nombre: " + nombre);
+        System.out.println("Email: " + email);
+        System.out.println("Puntos: " + puntos);
+        System.out.println("Nivel: " + getNivel());
+    }
+
+
 }
