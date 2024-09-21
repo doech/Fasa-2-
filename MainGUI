@@ -1,188 +1,85 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 public class MainGUI extends JFrame {
-    private Mapa mapa;
-    private JComboBox<String> peligrosComboBox;
-    private JButton calificarButton;
-    private JTextField calificacionField;
-    private JTextField tipoField;
-    private JTextField descripcionField;
-    private JTextField latitudField;
-    private JTextField longitudField;
-    private JTextArea peligrosTextArea;
+    private Mapa mapa; //instancia de mapa para gestionar peligros
+    private Usuario usuario; //instancia usuario para gestionar puntuaciones a futuro
 
-    public MainGUI(Mapa mapa) {
-        this.mapa = mapa;
-        setTitle("Aplicación de Peligros");
-        setSize(500, 400);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+    /**
+     * constructor de la clase MainGUI
+     */
 
-        //interfaz para registrar peligros
-        JPanel panelRegistro = new JPanel(new GridLayout(5, 2));
-        panelRegistro.setBorder(BorderFactory.createTitledBorder("Registrar Peligro"));
+    public MainGUI() {
+        mapa = new Mapa(); // Inicializa el mapa
+        usuario = new Usuario("Juan", "juan@example.com"); // crea usuario automaticamente
 
-        panelRegistro.add(new JLabel("Tipo de peligro:"));
-        tipoField = new JTextField(15);
-        panelRegistro.add(tipoField);
+        JFrame frame = new JFrame("Gestión de Peligros");
+        frame.setSize(400, 300);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(null);
 
-        panelRegistro.add(new JLabel("Descripción:"));
-        descripcionField = new JTextField(15);
-        panelRegistro.add(descripcionField);
+        JLabel label = new JLabel("Bienvenido a la Gestión de Peligros");
+        label.setBounds(100, 20, 250, 30);
+        frame.add(label);
 
-        panelRegistro.add(new JLabel("Latitud:"));
-        latitudField = new JTextField(15);
-        panelRegistro.add(latitudField);
+        JButton btnReportar = new JButton("Reportar Peligro");
+        btnReportar.setBounds(100, 70, 200, 30);
+        frame.add(btnReportar);
 
-        panelRegistro.add(new JLabel("Longitud:"));
-        longitudField = new JTextField(15);
-        panelRegistro.add(longitudField);
+        JButton btnMostrar = new JButton("Mostrar Peligros");
+        btnMostrar.setBounds(100, 120, 200, 30);
+        frame.add(btnMostrar);
 
-        JButton registrarPeligroButton = new JButton("Registrar Peligro");
-        registrarPeligroButton.addActionListener(new ActionListener() {
+        JButton btnGuardar = new JButton("Guardar Peligros en CSV");
+        btnGuardar.setBounds(100, 170, 200, 30);
+        frame.add(btnGuardar);
+
+        //reportar peligro
+        btnReportar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                registrarPeligro();
+                String tipoPeligro = JOptionPane.showInputDialog("Ingrese el tipo de peligro:");
+                String descripcionPeligro = JOptionPane.showInputDialog("Ingrese la descripción del peligro:");
+                double latitud = Double.parseDouble(JOptionPane.showInputDialog("Ingrese la latitud:"));
+                double longitud = Double.parseDouble(JOptionPane.showInputDialog("Ingrese la longitud:"));
+                int gravedad = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la gravedad (1-5):"));
+                String carril = JOptionPane.showInputDialog("Ingrese el carril (izquierdo/derecho):");
+
+                Peligro peligro = new Peligro(tipoPeligro, descripcionPeligro, latitud, longitud, gravedad, carril);
+                mapa.agregarPeligro(peligro);
+                usuario.agregarPuntos(10); // Agrega puntos al usuario
+
+                JOptionPane.showMessageDialog(frame, "Peligro reportado exitosamente.");
             }
         });
-        panelRegistro.add(new JLabel());
-        panelRegistro.add(registrarPeligroButton);
-
-        //mostrar peligros cercanos
-        JPanel panelDeteccion = new JPanel(new BorderLayout());
-        panelDeteccion.setBorder(BorderFactory.createTitledBorder("Detectar Peligro Cercano"));
-        peligrosTextArea = new JTextArea(10, 40);
-        peligrosTextArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(peligrosTextArea);
-
-        JPanel panelDeteccionInputs = new JPanel(new GridLayout(3, 2));
-        JTextField latitudDeteccionField = new JTextField(10);
-        JTextField longitudDeteccionField = new JTextField(10);
-        JTextField rangoDeteccionField = new JTextField(10);
-
-        panelDeteccionInputs.add(new JLabel("Latitud:"));
-        panelDeteccionInputs.add(latitudDeteccionField);
-        panelDeteccionInputs.add(new JLabel("Longitud:"));
-        panelDeteccionInputs.add(longitudDeteccionField);
-        panelDeteccionInputs.add(new JLabel("Rango:"));
-        panelDeteccionInputs.add(rangoDeteccionField);
-
-        JButton detectarPeligroButton = new JButton("Detectar Peligro");
-        detectarPeligroButton.addActionListener(new ActionListener() {
+    //mostrar peligros reportados
+    btnMostrar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    double latitud = Double.parseDouble(latitudDeteccionField.getText());
-                    double longitud = Double.parseDouble(longitudDeteccionField.getText());
-                    double rango = Double.parseDouble(rangoDeteccionField.getText());
-                    detectarPeligroCercano(latitud, longitud, rango);
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(MainGUI.this, "Introduce valores numéricos válidos para latitud, longitud y rango.", "Error de entrada", JOptionPane.ERROR_MESSAGE);
+                StringBuilder peligrosList = new StringBuilder("Peligros reportados:\n");
+                for (Peligro p : mapa.getPeligros()) {
+                    peligrosList.append(p.getTipo()).append(" - ").append(p.getDescripcion()).append("\n");
                 }
+                JOptionPane.showMessageDialog(frame, peligrosList.toString());
             }
         });
-        panelDeteccion.add(panelDeteccionInputs, BorderLayout.NORTH);
-        panelDeteccion.add(scrollPane, BorderLayout.CENTER);
-        panelDeteccion.add(detectarPeligroButton, BorderLayout.SOUTH);
 
-        // calificar reparaciones
-        JPanel panelCalificacion = new JPanel(new GridLayout(3, 1));
-        panelCalificacion.setBorder(BorderFactory.createTitledBorder("Calificar Reparación"));
-
-        peligrosComboBox = new JComboBox<>();
-        calificacionField = new JTextField(10);
-        calificarButton = new JButton("Calificar Reparación");
-
-        calificarButton.addActionListener(new ActionListener() {
+    // guardar en csv
+    btnGuardar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                calificarReparacion();
+                mapa.guardarPeligrosCSV("peligros.csv");
+                JOptionPane.showMessageDialog(frame, "Peligros guardados en CSV.");
             }
         });
 
-        panelCalificacion.add(new JLabel("Seleccionar peligro:"));
-        panelCalificacion.add(peligrosComboBox);
-        panelCalificacion.add(calificarButton);
-
-        // configuración ventana principal
-        JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.addTab("Registrar Peligro", panelRegistro);
-        tabbedPane.addTab("Detectar Peligros Cercanos", panelDeteccion);
-        tabbedPane.addTab("Calificar Reparación", panelCalificacion);
-
-        add(tabbedPane, BorderLayout.CENTER);
-
-        // actualizar los peligros reparados
-        actualizarPeligrosReparados();
-    }
-
-    // registrar un peligro con validación
-    private void registrarPeligro() {
-        try {
-            String tipo = tipoField.getText();
-            String descripcion = descripcionField.getText();
-            double latitud = Double.parseDouble(latitudField.getText());
-            double longitud = Double.parseDouble(longitudField.getText());
-
-            Peligro nuevoPeligro = new Peligro(tipo, descripcion, latitud, longitud);
-            mapa.agregarPeligro(nuevoPeligro);
-
-            JOptionPane.showMessageDialog(this, "Peligro registrado exitosamente.");
-            tipoField.setText("");
-            descripcionField.setText("");
-            latitudField.setText("");
-            longitudField.setText("");
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Introduce valores numéricos válidos para latitud y longitud.", "Error de entrada", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    // detectar peligros cercanos
-    private void detectarPeligroCercano(double latitud, double longitud, double rango) {
-        ArrayList<Peligro> peligrosCercanos = mapa.getPeligrosCercanos(latitud, longitud, rango);
-        peligrosTextArea.setText("");  // Limpiar el área de texto
-
-        if (peligrosCercanos.isEmpty()) {
-            peligrosTextArea.append("No se encontraron peligros cercanos.\n");
-        } else {
-            for (Peligro p : peligrosCercanos) {
-                peligrosTextArea.append("Tipo: " + p.getTipo() +
-                        ", Gravedad: " + p.getGravedad() +
-                        ", Ubicación: (" + p.getLatitud() + ", " + p.getLongitud() + ")\n");
-            }
-        }
-    }
-
-    // calificar una reparación
-    private void calificarReparacion() {
-        String seleccion = (String) peligrosComboBox.getSelectedItem();
-        if (seleccion != null) {
-            JOptionPane.showMessageDialog(this, "Has calificado la reparación de: " + seleccion);
-            // Aquí puedes implementar la lógica para manejar la calificación real
-        } else {
-            JOptionPane.showMessageDialog(this, "No hay peligros seleccionados.");
-        }
-    }
-
-    // actualizar con peligros reparados metodo
-    private void actualizarPeligrosReparados() {
-        peligrosComboBox.removeAllItems();
-        ArrayList<Peligro> peligros = mapa.getPeligros();
-        for (Peligro p : peligros) {
-            if (p.isReparado()) {
-                peligrosComboBox.addItem(p.getTipo() + ": " + p.getDescripcion());
-            }
-        }
-    }
-
-    //main para iniciar la aplicación gráfica
+    frame.setVisible(true); //muestra frame (ventana)
+}
+    /**
+     * Método principal para iniciar la aplicación.
+     */
     public static void main(String[] args) {
-        Mapa mapa = new Mapa();
-        MainGUI mainGUI = new MainGUI(mapa);
-        mainGUI.setVisible(true);
+        new MainGUI(); // creainstancia de MainGUI
     }
 }
