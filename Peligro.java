@@ -31,8 +31,16 @@ public class Peligro {
         return descripcion;
     }
 
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
     public double getLatitud() {
         return latitud;
+    }
+
+    public void setLatitud(double latitud) {
+        this.latitud = latitud;
     }
 
     public double getLongitud() {
