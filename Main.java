@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args){
         Mapa mapa = new Mapa();
@@ -50,6 +52,23 @@ public class Main {
                     for (Peligro p : mapa.getPeligros()) {
                         System.out.println(p.getTipo() + " - " + p.getDescripcion());
                     }
+                    break; case 3:
+                    System.out.println("Guardando peligros en CSV...");
+                    mapa.guardarPeligrosCSV("peligros.csv");
+                    System.out.println("Peligros guardados exitosamente.");
                     break;
 
-            
+                case 4:
+                    salir = true;
+                    System.out.println("Saliendo...");
+                    break;
+
+                default:
+                    System.out.println("Opción no válida.");
+                    break;
+            }
+        }
+
+        scanner.close();
+    }
+} 
