@@ -1,6 +1,10 @@
 import java.util.Scanner;
 
 public class Main {
+    /**
+     * @param args
+     * la clase Main mostrará las opciones al usuario de lo que puede hacer en el programa usando switch
+     */
     public static void main(String[] args){
         Mapa mapa = new Mapa();
         Usuario usuario = new Usuario("Juan", "juan@example.com"); // Cambio aquí
