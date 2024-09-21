@@ -23,6 +23,10 @@ public class Peligro {
         return tipo;
     }
 
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
     public String getDescripcion() {
         return descripcion;
     }
