@@ -1,28 +1,28 @@
-import java.util.ArrayList;
+import java.io.FileWriter;  
+import java.io.IOException;  
+import java.io.BufferedReader;  
+import java.io.FileReader;  import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Mapa {
     private ArrayList<Peligro> peligros;
-    public Scanner scan;
+    private Scanner scan;
 
     public Mapa() {
         this.peligros = new ArrayList<>();
+        this.scan = new Scanner(System.in);
     }
 
-    public void agregarPeligro(Peligro peligro) {
-        peligros.add(peligro);
-    }
-
-    public ArrayList<Peligro> getPeligros() {
-        return peligros;
-    }
-
-    public void agregarPeligro(Peligro peligro) {
+public void agregarPeligro(Peligro peligro) {
     if (peligro != null) {
         System.out.println("Ingrese el tipo de Peligro: ");
         String tipoPeligro = scan.next();
+        peligro.setTipo(tipoPeligro);
+        
         System.out.println("Escriba una breve descripcion del peligro: ");
         String descripcionPeligro = scan.next();
+        peligro.setDescripcion(descripcionPeligro);
+        
         //Determinar la longitud del peligro.
         System.out.println("Seleccione la longitud del peligro: ");
         System.out.println("1. Bajo (menos de 10 metros)");
@@ -44,6 +44,8 @@ public class Mapa {
                 peligro.setLongitud("Bajo");
                 break;
             }
+
+        // determinar la latitud del peligro
         System.out.println("Seleccione la latitud del peligro: ");
         System.out.println("1. Norte");
         System.out.println("2. Sur");
@@ -68,30 +70,72 @@ public class Mapa {
                 peligro.setLatitud("Norte");
                 break;
             }
+
+        if (!peligroYaAgregado(peligro)) {
+            peligros.add(peligro);
         //Actualizar lista de peligros.
         agregarPeligro(peligro);
-    }
-        
-        
-        peligros.add(peligro);
-        System.out.println("Peligro agregado: " + peligro.getTipo());
-    } else {
-        System.out.println("El peligro no puede ser nulo.");
-    }
+            System.out.println("Peligro agregado: " + peligro.getTipo());
+            } else {
+                System.out.println("El peligro ya está registrado en esta ubicación.");
+            }
+        } else {
+            System.out.println("El peligro no puede ser nulo.");
+        }
     }
 
+// Método para eliminar un peligro
     public void eliminarPeligro(Peligro peligro) {
         peligros.remove(peligro);
+        System.out.println("Peligro eliminado: " + peligro.getTipo());
     }
 
-
+// Obtener lista de peligros
     public ArrayList<Peligro> getPeligros() {
-    if (peligros.isEmpty()) {
-        System.out.println("No hay peligros registrados.");
+        if (peligros.isEmpty()) {
+            System.out.println("No hay peligros registrados.");
+        }
+        return peligros;
     }
-    return peligros;
+// Guardar peligros en un archivo CSV
+    public void guardarPeligrosCSV(String nombreArchivo) {
+        try (FileWriter writer = new FileWriter(nombreArchivo, true)) {
+            for (Peligro peligro : peligros) {
+                writer.append(peligro.getTipo());
+                writer.append(",");
+                writer.append(peligro.getDescripcion());
+                writer.append(",");
+                writer.append(peligro.getLatitud());
+                writer.append(",");
+                writer.append(peligro.getLongitud());
+                writer.append("\n");
+            }
+            System.out.println("Peligros guardados en el archivo: " + nombreArchivo);
+        } catch (IOException e) {
+            System.out.println("Error al guardar los peligros en el archivo CSV: " + e.getMessage());
+        }
     }
 
+    // Cargar peligros desde un archivo CSV
+    public void cargarPeligrosCSV(String nombreArchivo) {
+        try (BufferedReader br = new BufferedReader(new FileReader(nombreArchivo))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] datos = linea.split(",");
+                Peligro peligro = new Peligro();
+                peligro.setTipo(datos[0]);
+                peligro.setDescripcion(datos[1]);
+                peligro.setLatitud(datos[2]);
+                peligro.setLongitud(datos[3]);
+                peligros.add(peligro);  // Añadir el peligro a la lista
+            }
+            System.out.println("Peligros cargados desde el archivo: " + nombreArchivo);
+        } catch (IOException e) {
+            System.out.println("Error al cargar los peligros desde el archivo CSV: " + e.getMessage());
+        }
+    }
+
+// metodo para obtener peligros cercanos    
     public ArrayList<Peligro> getPeligrosCercanos(double latitud, double longitud, double rango) {
     ArrayList<Peligro> peligrosCercanos = new ArrayList<>();
     for (Peligro p : peligros) {
@@ -105,18 +149,19 @@ public class Mapa {
     return peligrosCercanos;
     }
 
+    //metodo auxiliar para calcualr la distancia entre dos puntos
     private double distancia(double lat1, double lon1, double lat2, double lon2) {
-    double radioTierra = 6371; // Radio de la tierra en km
-    double dLat = Math.toRadians(lat2 - lat1);
-    double dLon = Math.toRadians(lon2 - lon1);
-    double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        double radioTierra = 6371; // Radio de la tierra en km
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
                Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return radioTierra * c; // Devuelve la distancia en km
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return radioTierra * c; // Devuelve la distancia en km
     }
 
-
+// verificar si un peligro ya ha sido agregado 
     public boolean peligroYaAgregado(Peligro peligro) {
         for (Peligro p : peligros) {
             if (p.getLatitud() == peligro.getLatitud() && p.getLongitud() == peligro.getLongitud()) {
@@ -136,7 +181,7 @@ public class Mapa {
         }
     }
 
-
+// mostrar todos los peligros 
     public void mostrarPeligros() {
         if (peligros.isEmpty()) {
             System.out.println("No hay peligros registrados.");
@@ -149,7 +194,7 @@ public class Mapa {
         }
     }
 
-    
+    // actualizar la informacion de un peligro 
     public void actualizarPeligro(Peligro peligro, String nuevoTipo, String nuevaDescripcion, int nuevaGravedad) {
         for (Peligro p : peligros) {
             if (p.getLatitud() == peligro.getLatitud() && p.getLongitud() == peligro.getLongitud()) {
@@ -161,11 +206,5 @@ public class Mapa {
             }
         }
         System.out.println("Peligro no encontrado.");
-    }
-
-
-
-
-
-    
+    }    
 }
