@@ -45,4 +45,11 @@ public class Main {
                     System.out.println("Peligro reportado exitosamente.");
                     break;
 
+                    case 2:
+                    System.out.println("Peligros reportados:");
+                    for (Peligro p : mapa.getPeligros()) {
+                        System.out.println(p.getTipo() + " - " + p.getDescripcion());
+                    }
+                    break;
+
             
