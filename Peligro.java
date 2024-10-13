@@ -5,32 +5,38 @@
 public class Peligro {
     private String tipo; // bache, calle sin luz, derrumbe, etc.
     private String descripcion;
-    private double latitud;
-    private double longitud;
+    private String carril;
+    private String zona;
+    private String calle;
+    private String avenida;
+    private String carril;
     private boolean reparado;
     private int gravedad;
     private int calificacion;
-    private String carril;
       /**
      * Constructor de la clase Peligro.
      * 
      * @param tipo El tipo de peligro.
      * @param descripcion Breve descripción del peligro.
-     * @param latitud Latitud de la ubicación del peligro.
-     * @param longitud Longitud de la ubicación del peligro.
+     * @param zona Zona donde está ubicado el peligro.
+     * @param calle Calle de la ubicación del peligro.
+     * @param avenida Avenida de la ubicación del peligro.
+     * @param reparadp Marcador si esta reparado si o no
      * @param gravedad Nivel de gravedad del peligro (1 a 5).
      * @param carril Carril afectado (izquierdo o derecho).
      */
-    public Peligro(String tipo, String descripcion, double latitud, double longitud, int gravedad, String carril) {
+     public Peligro(String tipo, String descripcion, String zona, String calle, String avenida, int gravedad, String carril) {
         this.tipo = tipo;
         this.descripcion = descripcion;
-        this.latitud = latitud;
-        this.longitud = longitud;
+        this.zona = zona;
+        this.calle = calle;
+        this.avenida = avenida;
         this.reparado = false;
         setGravedad(gravedad);
         this.calificacion = 0;
         setCarril(carril);
     }
+    
      /**
      * Obtiene el tipo de peligro.
      * 
@@ -64,49 +70,72 @@ public class Peligro {
         this.descripcion = descripcion;
     }
     /**
-     * Obtiene la latitud de la ubicación del peligro.
+     * Obtiene la direccion del peligro
      * 
-     * @return La latitud del peligro.
+     * @return La zona, calle y avenida del peligro del peligro.
      */
-    public double getLatitud() {
-        return latitud;
+    public String getZona() {
+        return zona;
     }
-    /**
-     * Establece la latitud de la ubicación del peligro.
-     * 
-     * @param latitud La latitud del peligro.
-     */
-    public void setLatitud(double latitud) {
-        this.latitud = latitud;
+
+    public void setZona(String zona) {
+        this.zona = zona;
     }
-    /**
-     * Obtiene la longitud de la ubicación del peligro.
+
+    public String getCalle() {
+        return calle;
+    }
+
+    public void setCalle(String calle) {
+        this.calle = calle;
+    }
+
+    public String getAvenida() {
+        return avenida;
+    }
+
+    public void setAvenida(String avenida) {
+        this.avenida = avenida;
+    }
+
+      /**
+     * Verifica si el peligro ha sido reparado.
      * 
-     * @return La longitud del peligro.
+     * @return true si el peligro ha sido reparado, false en caso contrario.
      */
-    public double getLongitud() {
-        return longitud;
+    public boolean isReparado() {
+        return reparado;
     }
      /**
-     * Establece la longitud de la ubicación del peligro.
+     * Establece el estado de reparación del peligro.
+     * Si el peligro no está reparado, la calificación se restablece a 0.
      * 
-     * @param longitud La longitud del peligro.
+     * @param reparado true si el peligro ha sido reparado, false en caso contrario.
      */
-    public void setLongitud(double longitud) {
-        this.longitud = longitud;
+    public void setReparado(boolean reparado) {
+        this.reparado = reparado;
+        if (!reparado) {
+                this.calificacion = 0;
+        }
     }
+
     /**
      * Establece la gravedad del peligro.
      * 
      * @param gravedad El nivel de gravedad (entre 1 y 5).
      * @throws IllegalArgumentException Si la gravedad no está en el rango permitido.
      */
+    public int getGravedad(){
+        return gravedad;
+    }
+    
     public void setGravedad(int gravedad) {
     if (gravedad < 1 || gravedad > 5) {
         throw new IllegalArgumentException("La gravedad debe estar entre 1 y 5.");
     }
     this.gravedad = gravedad;
     }
+    
       /**
      * Obtiene el carril afectado por el peligro.
      * 
@@ -128,26 +157,7 @@ public class Peligro {
             throw new IllegalArgumentException("El carril debe ser 'izquierdo' o 'derecho'.");
         }
     }
-     /**
-     * Verifica si el peligro ha sido reparado.
-     * 
-     * @return true si el peligro ha sido reparado, false en caso contrario.
-     */
-    public boolean isReparado() {
-        return reparado;
-    }
-     /**
-     * Establece el estado de reparación del peligro.
-     * Si el peligro no está reparado, la calificación se restablece a 0.
-     * 
-     * @param reparado true si el peligro ha sido reparado, false en caso contrario.
-     */
-    public void setReparado(boolean reparado) {
-        this.reparado = reparado;
-        if (!reparado) {
-                this.calificacion = 0;
-        }
-    }
+   
      /**
      * Obtiene la calificación de la reparación del peligro.
      * 
@@ -174,3 +184,15 @@ public class Peligro {
             System.out.println("El peligro aún no ha sido reparado");
         }
     }
+
+    @Override
+    public String toString() {
+        return "Peligro: " + tipo + ", Descripción: " + descripcion +
+               ", Ubicación: Zona " + zona + ", Calle " + calle + ", Avenida " + avenida +
+               ", Gravedad: " + gravedad + ", Carril: " + carril +
+               ", Reparado: " + (reparado ? "Sí" : "No") + 
+               ", Calificación: " + calificacion;
+    }
+}
+
+    
