@@ -1,27 +1,51 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
 
-public class MainGUI extends JFrame {
+public class MainGUI {
     private Mapa mapa; //instancia de mapa para gestionar peligros
     private Usuario usuario; //instancia usuario para gestionar puntuaciones a futuro
+    private JPanel mapaPanel;
+    private BufferedImage mapaImage; //se utilizara una imagen como mapa para poder mostrarlo al usuario en el sitio
 
     /**
      * constructor de la clase MainGUI
      */
 
     public MainGUI() {
-        mapa = new Mapa(); // Inicializa el mapa
+        mapa = new Mapa(); // inicializa el mapa
         usuario = new Usuario("Juan", "juan@example.com"); // crea usuario automaticamente
+
+        // cargar la imagen del mapa
+        try {
+            mapaImage = ImageIO.read(new File("mapa_zona16.png")); // Asegúrate de que la imagen esté en el directorio correcto
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         JFrame frame = new JFrame("Gestión de Peligros");
         frame.setSize(400, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
 
-        JLabel label = new JLabel("Bienvenido a la Gestión de Peligros");
-        label.setBounds(100, 20, 250, 30);
-        frame.add(label);
+        //panel para el mapa
+        mapaPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                dibujarMapa(g); // Llamar al método para dibujar el mapa
+            }
+        };
+        mapaPanel.setPreferredSize(new Dimension(800, 400));
+        frame.add(mapaPanel, BorderLayout.CENTER);
+
+
+
+        //editar lugar botones
 
         JButton btnReportar = new JButton("Reportar Peligro");
         btnReportar.setBounds(100, 70, 200, 30);
