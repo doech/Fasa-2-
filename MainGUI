@@ -43,21 +43,16 @@ public class MainGUI {
         mapaPanel.setPreferredSize(new Dimension(800, 400));
         frame.add(mapaPanel, BorderLayout.CENTER);
 
-
-
-        //editar lugar botones
-
+        //botones
+        JPanel buttonPanel = new JPanel();
         JButton btnReportar = new JButton("Reportar Peligro");
-        btnReportar.setBounds(100, 70, 200, 30);
-        frame.add(btnReportar);
-
         JButton btnMostrar = new JButton("Mostrar Peligros");
-        btnMostrar.setBounds(100, 120, 200, 30);
-        frame.add(btnMostrar);
-
         JButton btnGuardar = new JButton("Guardar Peligros en CSV");
-        btnGuardar.setBounds(100, 170, 200, 30);
-        frame.add(btnGuardar);
+
+        buttonPanel.add(btnReportar);
+        buttonPanel.add(btnMostrar);
+        buttonPanel.add(btnGuardar);
+        frame.add(buttonPanel, BorderLayout.SOUTH);
 
         //reportar peligro
         btnReportar.addActionListener(new ActionListener() {
@@ -72,9 +67,10 @@ public class MainGUI {
 
                 Peligro peligro = new Peligro(tipoPeligro, descripcionPeligro, latitud, longitud, gravedad, carril);
                 mapa.agregarPeligro(peligro);
-                usuario.agregarPuntos(10); // Agrega puntos al usuario
+                usuario.agregarPuntos(10); // agrega puntos al usuario
 
                 JOptionPane.showMessageDialog(frame, "Peligro reportado exitosamente.");
+                mapaPanel.repaint();
             }
         });
     //mostrar peligros reportados
@@ -100,6 +96,26 @@ public class MainGUI {
 
     frame.setVisible(true); //muestra frame (ventana)
 }
+
+
+//metodo para implementar peligros en imagen del mapa
+private void dibujarMapa(Graphics g) {
+        // dibujar la imagen del mapa
+        if (mapaImage != null) {
+            g.drawImage(mapaImage, 0, 0, mapaPanel.getWidth(), mapaPanel.getHeight(), null);
+        }
+
+        // Luego dibuja los peligros en el mapa
+        for (Peligro p : mapa.getPeligros()) {
+            // Convertir latitud y longitud a coordenadas del panel
+            // Ajusta según la escala del mapa
+            int x = (int) (p.getLongitud() * 10); // Escalar longitud
+            int y = (int) (p.getLatitud() * 10); // Escalar latitud
+
+            g.setColor(Color.RED);
+            g.fillOval(x, y, 10, 10); // Dibujar el peligro como un círculo
+        }
+    }
     /**
      * Método principal para iniciar la aplicación.
      */
