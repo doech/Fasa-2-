@@ -60,8 +60,9 @@ public class MainGUI {
             public void actionPerformed(ActionEvent e) {
                 String tipoPeligro = JOptionPane.showInputDialog("Ingrese el tipo de peligro:");
                 String descripcionPeligro = JOptionPane.showInputDialog("Ingrese la descripción del peligro:");
-                double latitud = Double.parseDouble(JOptionPane.showInputDialog("Ingrese la latitud:"));
-                double longitud = Double.parseDouble(JOptionPane.showInputDialog("Ingrese la longitud:"));
+                String zona = Double.parseString(JOptionPane.showInputDialog("Ingrese la zona:"));
+                String calle = Double.parseString(JOptionPane.showInputDialog("Ingrese la calle:"));
+                String avenida = Double.parseString(JOptionPane.showInputDialog("Ingrese la avenida:"));
                 int gravedad = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la gravedad (1-5):"));
                 String carril = JOptionPane.showInputDialog("Ingrese el carril (izquierdo/derecho):");
 
