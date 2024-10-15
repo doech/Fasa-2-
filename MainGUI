@@ -11,7 +11,8 @@ public class MainGUI {
     private Usuario usuario; //instancia usuario para gestionar puntuaciones a futuro
     private JPanel mapaPanel;
     private BufferedImage mapaImage; //se utilizara una imagen como mapa para poder mostrarlo al usuario en el sitio
-
+    private Peligro peligroSeleccionado//para seleccionar peligro a marcar como reparado
+   
     /**
      * constructor de la clase MainGUI
      */
@@ -37,7 +38,7 @@ public class MainGUI {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                dibujarMapa(g); // Llamar al método para dibujar el mapa
+                dibujarMapa(g); // llamar al método para dibujar el mapa
             }
         };
         mapaPanel.setPreferredSize(new Dimension(800, 400));
@@ -48,6 +49,8 @@ public class MainGUI {
         JButton btnReportar = new JButton("Reportar Peligro");
         JButton btnMostrar = new JButton("Mostrar Peligros");
         JButton btnGuardar = new JButton("Guardar Peligros en CSV");
+        JButton btnReparar = new JButton("Marcar como Reparado");
+        JButton btnCalificar = new JButton("Calificar Reparación");
 
         buttonPanel.add(btnReportar);
         buttonPanel.add(btnMostrar);
@@ -60,10 +63,9 @@ public class MainGUI {
             public void actionPerformed(ActionEvent e) {
                 String tipoPeligro = JOptionPane.showInputDialog("Ingrese el tipo de peligro:");
                 String descripcionPeligro = JOptionPane.showInputDialog("Ingrese la descripción del peligro:");
-                //revisar implementacion de zona calle avenida
-                String zona = Double.parseString(JOptionPane.showInputDialog("Ingrese la zona:"));
-                String calle = Double.parseString(JOptionPane.showInputDialog("Ingrese la calle:"));
-                String avenida = Double.parseString(JOptionPane.showInputDialog("Ingrese la avenida:"));
+                String zona = JOptionPane.showInputDialog("Ingrese la zona:");
+                String calle = JOptionPane.showInputDialog("Ingrese la calle:");
+                String avenida = JOptionPane.showInputDialog("Ingrese la avenida:");
                 int gravedad = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la gravedad (1-5):"));
                 String carril = JOptionPane.showInputDialog("Ingrese el carril (izquierdo/derecho):");
 
@@ -95,13 +97,50 @@ public class MainGUI {
                 JOptionPane.showMessageDialog(frame, "Peligros guardados en CSV.");
             }
         });
+    // marcar como reparado
+    btnReparar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String[] peligrosArray = mapa.getPeligros().stream()
+                        .map(p -> p.getTipo() + " - " + p.getDescripcion())
+                        .toArray(String[]::new);
+                
+                String peligroSeleccionadoString = (String) JOptionPane.showInputDialog(frame, "Seleccione un peligro para marcar como reparado:",
+                        "Marcar como Reparado", JOptionPane.QUESTION_MESSAGE, null, peligrosArray, peligrosArray[0]);
 
-    frame.setVisible(true); //muestra frame (ventana)
-}
+                // Encontrar el peligro correspondiente
+                for (Peligro p : mapa.getPeligros()) {
+                    if ((p.getTipo() + " - " + p.getDescripcion()).equals(peligroSeleccionadoString)) {
+                        peligroSeleccionado = p;
+                        break;
+                    }
+                }
 
+                if (peligroSeleccionado != null) {
+                    peligroSeleccionado.setReparado(true);
+                    JOptionPane.showMessageDialog(frame, "Peligro marcado como reparado.");
+                }
+            }
+        });
 
-//metodo para implementar peligros en imagen del mapa
-private void dibujarMapa(Graphics g) {
+    // calificar reparación
+    btnCalificar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (peligroSeleccionado != null && peligroSeleccionado.isReparado()) {
+                    int calificacion = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la calificación de la reparación (1-5):"));
+                    peligroSeleccionado.setCalificacionReparacion(calificacion);
+                    JOptionPane.showMessageDialog(frame, "Reparación calificada con " + calificacion + " estrellas.");
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Primero debe marcar el peligro como reparado.");
+                }
+            }
+        });
+
+        frame.setVisible(true); //muestra frame (ventana)
+    }
+    //metodo para implementar peligros en imagen del mapa
+    private void dibujarMapa(Graphics g) {
         // dibujar la imagen del mapa
         if (mapaImage != null) {
             g.drawImage(mapaImage, 0, 0, mapaPanel.getWidth(), mapaPanel.getHeight(), null);
@@ -111,17 +150,26 @@ private void dibujarMapa(Graphics g) {
         for (Peligro p : mapa.getPeligros()) {
             // Convertir latitud y longitud a coordenadas del panel
             // Ajusta según la escala del mapa
-            int x = (int) (p.getLongitud() * 10); // Escalar longitud
-            int y = (int) (p.getLatitud() * 10); // Escalar latitud
+            int x = (int) (Math.random() * mapaPanel.getWidth()); // Posición aleatoria solo para ilustrar
+            int y = (int) (Math.random() * mapaPanel.getHeight()); // Posición aleatoria solo para ilustrar
 
-            g.setColor(Color.RED);
+            g.setColor(p.isReparado() ? Color.GREEN : Color.RED); // Verde si está reparado, rojo si no
             g.fillOval(x, y, 10, 10); // Dibujar el peligro como un círculo
         }
     }
+
     /**
      * Método principal para iniciar la aplicación.
      */
     public static void main(String[] args) {
-        new MainGUI(); // creainstancia de MainGUI
+        // Asegurarse de que la GUI se construya en el Event Dispatch Thread
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new MainGUI(); // Inicializar la GUI
+            }
+        });
     }
+}
+
 }
