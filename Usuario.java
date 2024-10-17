@@ -46,6 +46,20 @@ public class Usuario {
     public String getEmail() {
         return email;
     }
+     /**
+     * 
+     * Establece el email del usuario.
+     *
+     * @param email El email a establecer.
+     */
+    public void setEmail(String email) {
+        if (esEmailValido(email)) {
+            this.email = email;
+        } else {
+            System.out.println("El email proporcionado no es válido.");
+        }
+    }
+
 /**
      * Obtiene la cantidad de puntos del usuario.
      *
