@@ -8,7 +8,7 @@ public class Usuario {
     private String nombre;
     private String email;
     private int puntos; // para el sistema de recompensas
-    private HashMAP<String, Integer> reportarPeligro; 
+    private HashMap<String, Integer> reportarPeligro; 
  /**
      * Crea un nuevo usuario con el nombre y el email especificados.
      *
@@ -91,10 +91,8 @@ public class Usuario {
         mapa.agregarPeligro(peligro);
         String tipoPeligro = peligro.getTipo();
 
-        //Verifica si el usuario tiene puntos. Si no tiene, se le agregan 10 puntos.
-        if(this.puntos == 0){
-            this.agregarPuntos(10);
-        }
+        int puntosParaAgregar = reportarPeligro.getOrDefault(tipoPeligro, 0) +10;
+        reportarPeligro.put(tipoPeligro, puntosParaAgregar);
         
         //Verificacion de si el peligro ha sido reportado anteriormente.
         if (reportarPeligro.containsKey(tipoPeligro)) {
