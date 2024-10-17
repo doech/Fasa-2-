@@ -8,7 +8,7 @@ public class Usuario {
     private String nombre;
     private String email;
     private int puntos; // para el sistema de recompensas
-    private hashMAP<String, Integer> reportarPeligro; 
+    private HashMAP<String, Integer> reportarPeligro; 
  /**
      * Crea un nuevo usuario con el nombre y el email especificados.
      *
