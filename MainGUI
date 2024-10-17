@@ -20,6 +20,8 @@ public class MainGUI {
 
     public MainGUI() {
 
+        buttonPanel.setBackground(Color.LIGHT_GRAY); // para cambiar el color del fondo
+
          // Cargar el icono de la ventana
         try {
         frame.setIconImage(ImageIO.read(new File("icono_ventana.png")));
