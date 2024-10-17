@@ -12,12 +12,20 @@ public class MainGUI {
     private JPanel mapaPanel;
     private BufferedImage mapaImage; //se utilizara una imagen como mapa para poder mostrarlo al usuario en el sitio
     private Peligro peligroSeleccionado//para seleccionar peligro a marcar como reparado
+    private BufferedImage logoImage; // Para cargar el logo
    
     /**
      * constructor de la clase MainGUI
      */
 
     public MainGUI() {
+
+        try {
+        logoImage = ImageIO.read(new File("logo.png")); // el logo tiene que estar en el directorio correcto
+        } catch (IOException e) {
+        e.printStackTrace();
+        }
+
         mapa = new Mapa(); // inicializa el mapa
         usuario = new Usuario("Juan", "juan@example.com"); // crea usuario automaticamente
 
@@ -139,6 +147,17 @@ public class MainGUI {
 
         frame.setVisible(true); //muestra frame (ventana)
     }
+
+    @Override
+protected void paintComponent(Graphics g) {
+    super.paintComponent(g);
+    // para dibujar el logo en la esquina superior izquierda
+    if (logoImage != null) {
+        g.drawImage(logoImage, 10, 10, 100, 50, null); // para ajustar el tamaño
+    }
+    dibujarMapa(g);
+    }
+
     //metodo para implementar peligros en imagen del mapa
     private void dibujarMapa(Graphics g) {
         // dibujar la imagen del mapa
