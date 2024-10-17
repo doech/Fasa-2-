@@ -77,11 +77,21 @@ public class MainGUI {
         JButton btnGuardar = new JButton("Guardar Peligros en CSV");
         JButton btnReparar = new JButton("Marcar como Reparado");
         JButton btnCalificar = new JButton("Calificar Reparación");
+        JButton btnSalir = newJButton("Salir");
 
         buttonPanel.add(btnReportar);
         buttonPanel.add(btnMostrar);
         buttonPanel.add(btnGuardar);
+        buttonPanel.add(btnSalir);
         frame.add(buttonPanel, BorderLayout.SOUTH);
+
+        //salir del programa
+        btnSalir.addActionsListener(new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        System.exit(0); // Cerrar la app
+    }
+});
 
         //reportar peligro
         btnReportar.addActionListener(new ActionListener() {
