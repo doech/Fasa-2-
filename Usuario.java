@@ -96,7 +96,7 @@ public class Usuario {
         }
         
         //Verificacion de si el peligro ha sido reportado anteriormente.
-        if (reportarPeligro.containskey(tipoPeligro)) {
+        if (reportarPeligro.containsKey(tipoPeligro)) {
             int puntosPrevios = reportarPeligro.get(tipoPeligro);
             reportarPeligro.put(tipoPeligro, puntosPrevios + 10);
         } else {
