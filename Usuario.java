@@ -89,7 +89,13 @@ public class Usuario {
     public void reportarPeligro(Mapa mapa, Peligro peligro) {
         mapa.agregarPeligro(peligro);
         String tipoPeligro = peligro.getTipo();
- 
+
+        //Verifica si el usuario tiene puntos. Si no tiene, se le agregan 10 puntos.
+        if(this.puntos == 0){
+            this.agregarPuntos(10);
+        }
+        
+        //Verificacion de si el peligro ha sido reportado anteriormente.
         if (reportarPeligro.containskey(tipoPeligro)) {
             int puntosPrevios = reportarPeligro.get(tipoPeligro);
             reportarPeligro.put(tipoPeligro, puntosPrevios + 10);
