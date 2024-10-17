@@ -20,6 +20,13 @@ public class MainGUI {
 
     public MainGUI() {
 
+         // Cargar el icono de la ventana
+        try {
+        frame.setIconImage(ImageIO.read(new File("icono_ventana.png")));
+        } catch (IOException e) {
+        e.printStackTrace();
+        }
+
         try {
         logoImage = ImageIO.read(new File("logo.png")); // el logo tiene que estar en el directorio correcto
         } catch (IOException e) {
