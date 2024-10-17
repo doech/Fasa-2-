@@ -11,7 +11,7 @@ public class MainGUI {
     private Usuario usuario; //instancia usuario para gestionar puntuaciones a futuro
     private JPanel mapaPanel;
     private BufferedImage mapaImage; //se utilizara una imagen como mapa para poder mostrarlo al usuario en el sitio
-    private Peligro peligroSeleccionado//para seleccionar peligro a marcar como reparado
+    private Peligro peligroSeleccionado;//para seleccionar peligro a marcar como reparado
     private BufferedImage logoImage; // Para cargar el logo
    
     /**
