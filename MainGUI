@@ -30,7 +30,7 @@ public class MainGUI {
         }
 
         try {
-        logoImage = ImageIO.read(new File("logo.png")); // el logo tiene que estar en el directorio correcto
+        logoImage = ImageIO.read(new File("logo.png")); // para poner el logo, el logo tiene que estar en el directorio correcto
         } catch (IOException e) {
         e.printStackTrace();
         }
