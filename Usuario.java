@@ -68,19 +68,19 @@ public class Usuario {
     public int getPuntos() {
         return puntos;
     }
- /**
-     * Agrega puntos al usuario. Si se reporta un peligro, se le agregan 10 puntos.
+/**
+     * Agrega puntos al usuario. Si se reporta un peligro, se le agregan los puntos correspondientes.
      *
      * @param puntos Los puntos a agregar.
      */
     public void agregarPuntos(int puntos) {
-        if (puntos > 0){
-            if(this.puntos ==0) {
-                this.puntos = puntos;
-        } else {
+        if (puntos > 0) {
             this.puntos += puntos;
+        } else {
+            System.out.println("No se pueden añadir puntos negativos.");
         }
     }
+
  /**
      * Reporta un peligro y otorga puntos al usuario.
      *
