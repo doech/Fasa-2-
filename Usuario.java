@@ -154,6 +154,7 @@ public class Usuario {
             writer.append(",");
             writer.append(Integer.toString(puntos));
             writer.append("\n");
+            System.out.println("Datos del usuario guardados en " + nombreArchivo); // *** Mejora: Confirmación al guardar datos ***
         } catch (IOException e) {
             System.out.println("Error al guardar los datos en CSV: " + e.getMessage());
         }
