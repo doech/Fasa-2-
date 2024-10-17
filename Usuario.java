@@ -75,9 +75,10 @@ public class Usuario {
      */
     public void agregarPuntos(int puntos) {
         if (puntos > 0){
+            if(this.puntos ==0) {
+                this.puntos = puntos;
+        } else {
             this.puntos += puntos;
-        } else{
-            System.out.println("No se pueden añadir puntos negativos");
         }
     }
  /**
