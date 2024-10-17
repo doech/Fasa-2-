@@ -29,6 +29,15 @@ public class Usuario {
     public String getNombre() {
         return nombre;
     }
+    /**
+     * 
+     * Establece el nombre del usuario.
+     *
+     * @param nombre El nombre a establecer.
+     */
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
  /**
      * Obtiene el email del usuario.
      *
