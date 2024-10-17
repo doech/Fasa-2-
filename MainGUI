@@ -185,6 +185,13 @@ public class MainGUI {
         });
 
         frame.setVisible(true); //muestra frame (ventana)
+
+    frame.addWindowListener(new WindowAdapter() {
+    @Override
+    public void windowActivated(WindowEvent e) {
+        mapaPanel.repaint(); // para volver a actualizar los peligros cuando la ventana se actualiza
+    }
+});
     }
 
     @Override
