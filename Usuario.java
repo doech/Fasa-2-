@@ -88,24 +88,18 @@ public class Usuario {
      * @param peligro El peligro reportado.
      */
     public void reportarPeligro(Mapa mapa, Peligro peligro) {
-        mapa.agregarPeligro(peligro);
-        String tipoPeligro = peligro.getTipo();
+    mapa.agregarPeligro(peligro);
+    String tipoPeligro = peligro.getTipo();
 
-        //Implementación de getOrDefault para manejo de puntos ya existentes.
-        int puntosParaAgregar = reportarPeligro.getOrDefault(tipoPeligro, 0) +10;
-        reportarPeligro.put(tipoPeligro, puntosParaAgregar);
-        
-        //Verificacion de si el peligro ha sido reportado anteriormente.
-        if (reportarPeligro.containsKey(tipoPeligro)) {
-            int puntosPrevios = reportarPeligro.get(tipoPeligro);
-            reportarPeligro.put(tipoPeligro, puntosPrevios + 10);
-        } else {
-            reportarPeligro.put(tipoPeligro, 10); 
-        }
-        //agregar puntos generales al usuario.
-        this.agregarPuntos(10);
-        // mensaje para el usuario.
-        System.out.println("Peligro reportado: " + tipoPeligro + "Ganaste +10 puntos!");
+    // Obtener los puntos actuales para este tipo de peligro y sumarle 10 puntos.
+    int puntosParaAgregar = reportarPeligro.getOrDefault(tipoPeligro, 0) + 10;
+    reportarPeligro.put(tipoPeligro, puntosParaAgregar);
+
+    // Agregar puntos al usuario.
+    this.agregarPuntos(10);
+
+    // Mensaje para el usuario.
+    System.out.println("Peligro reportado. " + tipoPeligro + "\n ¡Ganaste +10 puntos!");
     }
    /**
      * Valida si el email proporcionado es válido.
