@@ -91,6 +91,7 @@ public class Usuario {
         mapa.agregarPeligro(peligro);
         String tipoPeligro = peligro.getTipo();
 
+        //Implementación de getOrDefault para manejo de puntos ya existentes.
         int puntosParaAgregar = reportarPeligro.getOrDefault(tipoPeligro, 0) +10;
         reportarPeligro.put(tipoPeligro, puntosParaAgregar);
         
@@ -101,8 +102,10 @@ public class Usuario {
         } else {
             reportarPeligro.put(tipoPeligro, 10); 
         }
-        //agregar puntos generales al usuario
-        this.agregarPuntos(10); // por ejemplo, 10 puntos por cada reporte
+        //agregar puntos generales al usuario.
+        this.agregarPuntos(10);
+        // mensaje para el usuario.
+        System.out.println("Peligro reportado: " + tipoPeligro + "Ganaste +10 puntos!");
     }
    /**
      * Valida si el email proporcionado es válido.
