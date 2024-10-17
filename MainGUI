@@ -20,6 +20,13 @@ public class MainGUI {
 
     public MainGUI() {
 
+        Font buttonFont = new Font("Arial", Font.BOLD, 12); // para cambiar la letra
+        btnReportar.setFont(buttonFont);
+        btnMostrar.setFont(buttonFont);
+        btnGuardar.setFont(buttonFont);
+        btnReparar.setFont(buttonFont);
+        btnCalificar.setFont(buttonFont);
+
         mapaPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2)); // para el borde alrededor del mapa
 
         buttonPanel.setBackground(Color.LIGHT_GRAY); // para cambiar el color del fondo
