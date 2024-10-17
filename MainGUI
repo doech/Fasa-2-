@@ -107,14 +107,35 @@ public class MainGUI {
     btnMostrar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                StringBuilder peligrosList = new StringBuilder("Peligros reportados:\n");
-                for (Peligro p : mapa.getPeligros()) {
-                    peligrosList.append(p.getTipo()).append(" - ").append(p.getDescripcion()).append("\n");
-                }
-                JOptionPane.showMessageDialog(frame, peligrosList.toString());
+                verificarPeligrosCercanos();
             }
         });
 
+        // Método para verificar y notificar peligros cercanos.
+    public void verificarPeligrosCercanos() {
+        double rango = 5.0; // Por ejemplo, 5 km de rango
+        List<Peligro> peligrosCercanos = mapa.ObtenerPeligrosCercanos(usuario.getLatitud(), usuario.getLongitud(), rango);
+
+        if (!peligrosCercanos.isEmpty()) {
+            mostrarAlerta(peligrosCercanos); // Mostrar alertas si hay peligros cercanos
+        } else {
+            JOptionPane.showMessageDialog(null, "No hay peligros cercanos.", "Información", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    // Método que muestra una alerta gráfica al usuario..
+    public void mostrarAlerta(List<Peligro> peligrosCercanos) {
+        StringBuilder mensaje = new StringBuilder("¡Peligros cercanos detectados!\n");
+        for (Peligro peligro : peligrosCercanos) {
+            mensaje.append(peligro.getDescripcion())
+                   .append(" en coordenadas: (")
+                   .append(peligro.getLatitud())
+                   .append(", ")
+                   .append(peligro.getLongitud())
+                   .append(")\n");
+        }
+        JOptionPane.showMessageDialog(null, mensaje.toString(), "Alerta de Peligro", JOptionPane.WARNING_MESSAGE);
+    }
     // guardar en csv
     btnGuardar.addActionListener(new ActionListener() {
             @Override
