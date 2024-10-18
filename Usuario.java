@@ -144,7 +144,6 @@ public class Usuario {
         System.out.println("Puntos: " + puntos);
         System.out.println("Nivel: " + getNivel());
     }
-}
 // Guardar datos de usuario en un archivo CSV simple
  public void guardarDatosCSV(String nombreArchivo) {
         try (FileWriter writer = new FileWriter(nombreArchivo, true)) {
