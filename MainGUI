@@ -15,9 +15,7 @@ public class MainGUI extends JFrame {
     private List<Usuario> usuarios;
     private ImageIcon mapIcon;
     private List<Point> dangerPoints; // Lista de puntos de peligros
-
-    // Declarar los botones como variables de instancia para acceder a ellos en varios métodos
-    private JButton marcarReparadoButton;
+    private JButton marcarReparadoconClickButton;
 
     // Constructor
     public MainGUI() {
@@ -52,15 +50,25 @@ public class MainGUI extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 Point clickPoint = e.getPoint();
-                String avenida = JOptionPane.showInputDialog("Ingrese la Avenida del peligro:");
-                String calle = JOptionPane.showInputDialog("Ingrese la Calle del peligro:");
-                String descripcion = JOptionPane.showInputDialog("Ingrese la Descripción del peligro:");
-
-                if (avenida != null && calle != null && descripcion != null) {
-                    Peligro nuevoPeligro = new Peligro(avenida, calle, descripcion);
-                    mapa.registrarPeligro(nuevoPeligro);
-                    dangerPoints.add(clickPoint);  // Añadir la posición donde se hizo clic a la lista de puntos de peligro
-                    mapLabel.repaint();  // Repintar el mapa para mostrar los marcadores
+        
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    // Marcar como reparado con clic derecho
+                    Graphics g = mapLabel.getGraphics();
+                    g.setColor(Color.GREEN);
+                    g.fillOval(clickPoint.x - 5, clickPoint.y - 5, 20, 20);  // Dibuja un círculo verde más grande
+                    JOptionPane.showMessageDialog(null, "Peligro encontrado, haga click en el mapa para señalizar su reparación");
+                } else {
+                    // Reportar nuevo peligro con clic izquierdo
+                    String avenida = JOptionPane.showInputDialog("Ingrese la Avenida del peligro:");
+                    String calle = JOptionPane.showInputDialog("Ingrese la Calle del peligro:");
+                    String descripcion = JOptionPane.showInputDialog("Ingrese la Descripción del peligro:");
+        
+                    if (avenida != null && calle != null && descripcion != null) {
+                        Peligro nuevoPeligro = new Peligro(avenida, calle, descripcion);
+                        mapa.registrarPeligro(nuevoPeligro);
+                        dangerPoints.add(clickPoint);  // Añadir la posición donde se hizo clic a la lista de puntos de peligro
+                        mapLabel.repaint();  // Repintar el mapa para mostrar los marcadores
+                    }
                 }
             }
         });
@@ -77,17 +85,17 @@ public class MainGUI extends JFrame {
         JButton reportarButton = new JButton("Reportar Peligro");
         JButton mostrarButton = new JButton("Mostrar Peligros");
         JButton guardarCSVButton = new JButton("Guardar en CSV");
-        marcarReparadoButton = new JButton("Marcar como Reparado");  // Botón para marcar peligro reparado
         JButton calificarButton = new JButton("Calificar Reparación");
         JButton puntosButton = new JButton("Ver Puntos del Usuario");  // Mostrar los puntos del usuario
+        JButton marcarReparadoConClickButton = new JButton("Marcar Reparado con Click");
 
         // Añadir los botones al panel de botones
         buttonPanel.add(reportarButton);
         buttonPanel.add(mostrarButton);
         buttonPanel.add(guardarCSVButton);
-        buttonPanel.add(marcarReparadoButton);
         buttonPanel.add(calificarButton);
         buttonPanel.add(puntosButton);  // Botón para ver los puntos del usuario
+        buttonPanel.add(marcarReparadoConClickButton); 
 
         // Añadir el panel de botones al panel principal en la parte inferior
         add(buttonPanel, BorderLayout.SOUTH);
@@ -120,12 +128,6 @@ public class MainGUI extends JFrame {
             }
         });
 
-        marcarReparadoButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                marcarPeligroReparado();  // Marcar peligro como reparado
-            }
-        });
-
         calificarButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 calificarReparacion();  // Calificar reparación del peligro
@@ -135,6 +137,12 @@ public class MainGUI extends JFrame {
         puntosButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 mostrarPuntosUsuario();  // Mostrar puntos del usuario
+            }
+        });
+
+        marcarReparadoConClickButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                marcarPeligroReparadoConClick();  // Llama al método para marcar peligro reparado con clic
             }
         });
     }
@@ -252,49 +260,64 @@ public class MainGUI extends JFrame {
     }
 
     // Método para marcar un peligro como reparado y cambiar el color del botón a verde
-    private void marcarPeligroReparado() {
+   private void marcarPeligroReparadoConClick() {
         JTextField avenidaField = new JTextField(15);
         JTextField calleField = new JTextField(15);
-
+    
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
-
+    
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.EAST;
         panel.add(new JLabel("Avenida:"), gbc);
-
+    
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.WEST;
         panel.add(avenidaField, gbc);
-
+    
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.EAST;
         panel.add(new JLabel("Calle:"), gbc);
-
+    
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.WEST;
         panel.add(calleField, gbc);
-
-        int result = JOptionPane.showConfirmDialog(null, panel, "Marcar Peligro Reparado", JOptionPane.OK_CANCEL_OPTION);
+    
+        int result = JOptionPane.showConfirmDialog(null, panel, "Marcar Peligro como Reparado", JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
             String avenida = avenidaField.getText();
             String calle = calleField.getText();
-
-            // Lógica para marcar como reparado
-            try {
-                mapa.marcarPeligroReparado(avenida, calle);
+    
+            // Buscar el peligro que coincida con la avenida y calle ingresadas
+            boolean peligroEncontrado = false;
+            Point puntoReparado = null;
+    
+            for (int i = 0; i < mapa.getPeligros().size(); i++) {
+                Peligro peligro = mapa.getPeligros().get(i);
+                if (peligro.getAvenida().equals(avenida) && peligro.getCalle().equals(calle) && !peligro.isReparado()) {
+                    peligro.setReparado(true);  // Marcar el peligro como reparado
+                    peligroEncontrado = true;
+                    puntoReparado = dangerPoints.get(i);  // Obtener el punto correspondiente al peligro en el mapa
+                    break;
+                }
+            }
+    
+            if (peligroEncontrado && puntoReparado != null) {
+                // Dibujar un círculo verde sobre el peligro para indicar que ha sido reparado
+                Graphics g = mapLabel.getGraphics();
+                g.setColor(Color.GREEN);
+                g.fillOval(puntoReparado.x - 5, puntoReparado.y - 5, 20, 20);  // Dibuja un círculo más grande en verde
+    
+                mapLabel.repaint();  // Repintar el mapa para reflejar el cambio
                 JOptionPane.showMessageDialog(null, "Peligro marcado como reparado.");
-
-                // Cambiar el color del botón a verde para indicar que ha sido reparado
-                marcarReparadoButton.setBackground(Color.GREEN);
-            } catch (IllegalArgumentException e) {
-                JOptionPane.showMessageDialog(null, "No se encontró el peligro para la Avenida: " + avenida + " y la Calle: " + calle);
+            } else {
+                JOptionPane.showMessageDialog(null, "No se encontró un peligro en la avenida y calle especificadas.");
             }
         }
     }
