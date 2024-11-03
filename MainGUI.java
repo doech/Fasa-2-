@@ -262,6 +262,8 @@ public class MainGUI extends JFrame {
                    .append(", Descripción: ").append(peligro.getDescripcion())
                    .append(", Reparado: ").append(peligro.isReparado() ? "Sí" : "No")
                    .append(", Calificación: ").append(peligro.getCalificacion())
+                   .append(", días aproximados de reparación: ").append(peligro.getTiempoAproximadoReparacion())
+                   .append(", Registrado el ").append(peligro.getFechaRegistro()) //
                    .append("\n\n");
         }
         
