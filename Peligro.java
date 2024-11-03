@@ -10,6 +10,7 @@ public class Peligro {
     private static final int TIEMPO_APROXIMADO_REPARACION = 1; 
     private LocalDate fechaRegistro;
     private LocalDate fechaColocacion;
+    private String zona;
 
     public Peligro(String avenida, String calle, String descripcion) {
         this.avenida = avenida;
@@ -19,6 +20,12 @@ public class Peligro {
         this.calificacion = 0;
         this.fechaColocacion = fechaColocacion;
         this.fehcaRegistro = LocalDate.now();
+        this.fechaColocacion = null; 
+        this.zona = zona;
+    }
+
+     public String getZona() {
+        return zona;
     }
 
     public String getAvenida() {
