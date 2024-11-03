@@ -57,9 +57,13 @@ public class Peligro {
         return TIEMPO_APROXIMADO_REPARACION;
     }
 
+    public LocalDate getFechaColocacion(){
+        return fechaColocacion;
+    }
+    
     // Método para calcular el tiempo transcurrido desde la fecha de registro
     public long getTiempoTranscurridoEnHoras() {
-        return ChronoUnit.DAYS.between(fechaRegistro, LocalDate.now());
+        return ChronoUnit.DAYS.between(fechaColocacion, LocalDate.now());
     }
 
     @Override
