@@ -39,4 +39,22 @@ public class Mapa {
         }
         throw new IllegalArgumentException("No se encontró ningún peligro en la avenida " + avenida + " y la calle " + calle);
     }
+
+    // Método para eliminar un peligro con su ubicación (avenida y calle)
+    public void eliminarPeligro(String avenida, String calle) {
+        for (int i = 0; i < peligros.size(); i++) {
+            Peligro peligro = peligros.get(i);
+            if (peligro.getAvenida().equals(avenida) && peligro.getCalle().equals(calle)) {
+                peligros.remove(i);
+                return; 
+            }
+        }
+        throw new IllegalArgumentException("No se encontró ningún peligro en la avenida " + avenida + " y la calle " + calle);
+    }
+
+    // Método para la lista de peligros que pueden necesitar ser repintados
+    public List<Peligro> obtenerPeligrosParaRepintado() {
+        return new ArrayList<>(peligros);
+    }
+
 }
