@@ -70,7 +70,8 @@ public class Peligro {
     public String toString() {
         return "Peligro en Avenida: " + avenida + ", Calle: " + calle + ", Descripción: " + descripcion +
                ", Reparado: " + reparado + ", Calificación: " + calificacion +
+               ", Fecha de Colocación: " + fechaColocacion +
                ", Tiempo Aproximado de Reparación: " + TIEMPO_APROXIMADO_REPARACION + " día(s)" +
-               ", Tiempo Transcurrido: " + getTiempoTranscurridoEnHoras() + " horas desde el registro";
+               ", Tiempo Transcurrido desde Colocación: " + getTiempoTranscurridoDesdeColocacion() + " día(s)";
     }
 }
