@@ -289,8 +289,7 @@ public class MainGUI extends JFrame {
 
     // Método para guardar los peligros en un archivo CSV
     private void guardarPeligrosEnCSV() {
-        // Cambia esta ruta a una ruta válida en tu sistema
-        File file = new File("C:\\ruta_completa\\peligros.csv");
+        File file = new File(FILE_PATH);
         file.getParentFile().mkdirs();  // Crear las carpetas si no existen
 
         try (FileWriter writer = new FileWriter(file)) {
@@ -298,10 +297,38 @@ public class MainGUI extends JFrame {
             for (Peligro peligro : peligros) {
                 writer.write(peligro.getAvenida() + "," + peligro.getCalle() + "," + peligro.getDescripcion() + "," + peligro.isReparado() + "," + peligro.getCalificacion() + "\n");
             }
-            JOptionPane.showMessageDialog(null, "Peligros guardados en peligros.csv.");
+            JOptionPane.showMessageDialog(null, "Peligros guardados en " + FILE_PATH);
         } catch (IOException e) {
             e.printStackTrace();  // Imprime el error en la consola para depuración
             JOptionPane.showMessageDialog(null, "Error al guardar en CSV: " + e.getMessage());
+        }
+    }
+
+    //Método para cargar los peligros desde un archivo CSV al iniciar
+    private void cargarPeligrosDesdeCSV() {
+        File file = new File(FILE_PATH);
+        if (!file.exists()) return;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+                if (data.length == 5) {
+                    String avenida = data[0];
+                    String calle = data[1];
+                    String descripcion = data[2];
+                    boolean reparado = Boolean.parseBoolean(data[3]);
+                    int calificacion = Integer.parseInt(data[4]);
+
+                    Peligro peligro = new Peligro(avenida, calle, descripcion);
+                    peligro.setReparado(reparado);
+                    peligro.setCalificacion(calificacion);
+                    mapa.registrarPeligro(peligro);
+                }
+            }
+            System.out.println("Peligros cargados desde " + FILE_PATH);
+        } catch (IOException e) {
+            System.err.println("Error al cargar desde CSV: " + e.getMessage());
         }
     }
 
