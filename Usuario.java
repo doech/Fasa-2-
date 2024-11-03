@@ -4,12 +4,14 @@ public class Usuario implements Serializable {
     private String nombre;
     private String avenida;
     private String calle;
+    private String zona;
     private int puntos;
 
-    public Usuario(String nombre, String avenida, String calle) {
+    public Usuario(String nombre, String avenida, String calle, String zona) {
         this.nombre = nombre;
         this.avenida = avenida;
         this.calle = calle;
+        this.zona = zona;
         this.puntos = 0; // Inicialmente 0 puntos
     }
 
@@ -23,6 +25,10 @@ public class Usuario implements Serializable {
 
     public String getCalle() {
         return calle;
+    }
+
+    public String getZona() {
+        return zona;
     }
 
     public int getPuntos() {
