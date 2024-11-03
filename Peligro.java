@@ -18,6 +18,7 @@ public class Peligro {
         this.reparado = false;
         this.calificacion = 0;
         this.fechaColocacion = fechaColocacion;
+        this.fehcaRegistro = LocalDate.now();
     }
 
     public String getAvenida() {
