@@ -8,6 +8,16 @@ public class Mapa {
         peligros = new ArrayList<>();
     }
 
+    public List<Peligro> getPeligrosPorZona(String zona) {
+    List<Peligro> peligrosFiltrados = new ArrayList<>();
+    for (Peligro peligro : peligros) {
+        if (peligro.getZona().equalsIgnoreCase(zona)) {
+            peligrosFiltrados.add(peligro);
+        }
+    }
+    return peligrosFiltrados;
+    }
+
     // Método para registrar un nuevo peligro
     public void registrarPeligro(Peligro peligro) {
         peligros.add(peligro);
