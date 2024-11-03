@@ -9,6 +9,7 @@ public class Peligro {
     private int calificacion;
     private static final int TIEMPO_APROXIMADO_REPARACION = 1; 
     private LocalDate fechaRegistro;
+    private LocalDate fechaColocacion;
 
     public Peligro(String avenida, String calle, String descripcion) {
         this.avenida = avenida;
