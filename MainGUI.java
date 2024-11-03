@@ -19,6 +19,9 @@ public class MainGUI extends JFrame {
     private List<Point> dangerPoints; // Lista de puntos de peligros
     private JButton marcarReparadoConClickButton;
 
+    // Ruta del archivo CSV para persistencia de datos
+    private static final String FILE_PATH = "peligros.csv";
+    
     // Constructor
     public MainGUI() {
         mapa = new Mapa();
@@ -28,6 +31,9 @@ public class MainGUI extends JFrame {
         setSize(1000, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+
+        //Cargar peligros desde el archivo CSV al iniciar
+        cargarPeligrosDesdeCSV();
     
         // Crear un usuario al inicio
         mostrarDialogoCrearUsuario();
@@ -51,6 +57,14 @@ public class MainGUI extends JFrame {
         if (usuarioActual != null) {
             cargarMapaPorZona(usuarioActual.getZona());
         }
+
+        //Guardar los peligros en CSV al cerrar la ventana
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                guardarPeligrosEnCSV();
+            }
+        });
     
         // Agregar un listener para detectar clics en el mapa
         mapLabel.addMouseListener(new MouseAdapter() {
