@@ -66,6 +66,13 @@ public class Peligro {
         return ChronoUnit.DAYS.between(fechaColocacion, LocalDate.now());
     }
 
+    // Método para enviar notificación si el peligro sigue sin reparar después del tiempo estimado
+    public void enviarNotificacionSiNecesario() {
+        if (!reparado && getTiempoTranscurridoDesdeColocacion() > TIEMPO_APROXIMADO_REPARACION) {
+            System.out.println("ALERTA: El peligro en Avenida: " + avenida + ", Calle: " + calle +
+                               " permanece sin reparar por más tiempo del estimado.");
+    }
+
     @Override
     public String toString() {
         return "Peligro en Avenida: " + avenida + ", Calle: " + calle + ", Descripción: " + descripcion +
