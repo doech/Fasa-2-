@@ -1,9 +1,14 @@
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+
 public class Peligro {
     private String avenida;
     private String calle;
     private String descripcion;
     private boolean reparado;
     private int calificacion;
+    private static final int TIEMPO_APROXIMADO_REPARACION = 1; 
+    private LocalDate fechaRegistro;
 
     public Peligro(String avenida, String calle, String descripcion) {
         this.avenida = avenida;
@@ -41,9 +46,24 @@ public class Peligro {
         this.calificacion = calificacion;
     }
 
+    public LocalDate getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public int getTiempoAproximadoReparacion() {
+        return TIEMPO_APROXIMADO_REPARACION;
+    }
+
+    // Método para calcular el tiempo transcurrido desde la fecha de registro
+    public long getTiempoTranscurridoEnHoras() {
+        return ChronoUnit.DAYS.between(fechaRegistro, LocalDate.now());
+    }
+
     @Override
     public String toString() {
         return "Peligro en Avenida: " + avenida + ", Calle: " + calle + ", Descripción: " + descripcion +
-               ", Reparado: " + reparado + ", Calificación: " + calificacion;
+               ", Reparado: " + reparado + ", Calificación: " + calificacion +
+               ", Tiempo Aproximado de Reparación: " + TIEMPO_APROXIMADO_REPARACION + " día(s)" +
+               ", Tiempo Transcurrido: " + getTiempoTranscurridoEnHoras() + " horas desde el registro";
     }
 }
