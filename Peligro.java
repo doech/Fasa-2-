@@ -17,6 +17,7 @@ public class Peligro {
         this.descripcion = descripcion;
         this.reparado = false;
         this.calificacion = 0;
+        this.fechaColocacion = fechaColocacion;
     }
 
     public String getAvenida() {
