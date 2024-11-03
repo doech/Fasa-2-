@@ -226,20 +226,24 @@ public class MainGUI extends JFrame {
 
     // Método para mostrar los peligros registrados en el área de texto y en el mapa
     private void mostrarPeligros() {
-        List<Peligro> peligros = mapa.getPeligros();
-        displayArea.setText("");  // Limpiar el área de texto
-        if (peligros.isEmpty()) {
-            displayArea.append("No hay peligros registrados.\n");
-        } else {
-            for (Peligro peligro : peligros) {
-                displayArea.append("Peligro en Avenida: " + peligro.getAvenida() + ", Calle: " + peligro.getCalle() +
-                        ", Descripción: " + peligro.getDescripcion() +
-                        ", Reparado: " + (peligro.isReparado() ? "Sí" : "No") +
-                        ", Calificación: " + peligro.getCalificacion() + "\n");
-            }
+    List<Peligro> peligros = mapa.getPeligros();
+
+    if (peligros.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "No hay peligros registrados.", "Peligros", JOptionPane.INFORMATION_MESSAGE);
+    } else {
+        StringBuilder mensaje = new StringBuilder();
+        for (Peligro peligro : peligros) {
+            mensaje.append("Avenida: ").append(peligro.getAvenida())
+                   .append(", Calle: ").append(peligro.getCalle())
+                   .append(", Descripción: ").append(peligro.getDescripcion())
+                   .append(", Reparado: ").append(peligro.isReparado() ? "Sí" : "No")
+                   .append(", Calificación: ").append(peligro.getCalificacion())
+                   .append("\n\n");
         }
-        mapLabel.repaint();  // Repintar el mapa para mostrar los peligros
-    }
+        
+        JOptionPane.showMessageDialog(this, mensaje.toString(), "Lista de Peligros", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }  
 
     // Método para guardar los peligros en un archivo CSV
     private void guardarPeligrosEnCSV() {
