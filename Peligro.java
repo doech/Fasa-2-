@@ -1,5 +1,4 @@
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 
 public class Peligro {
     private String avenida;
@@ -7,24 +6,26 @@ public class Peligro {
     private String descripcion;
     private boolean reparado;
     private int calificacion;
-    private static final int TIEMPO_APROXIMADO_REPARACION = 1; 
-    private LocalDate fechaRegistro;
+    private static final int TiempoAproximadoReparacion = 1;
+    private LocalDate fechaRegistro; // Fecha de registro
     private LocalDate fechaColocacion;
     private String zona;
 
-    public Peligro(String avenida, String calle, String descripcion) {
+    // Constructor
+    public Peligro(String avenida, String calle, String descripcion, String zona) {
         this.avenida = avenida;
         this.calle = calle;
         this.descripcion = descripcion;
         this.reparado = false;
         this.calificacion = 0;
-        this.fechaColocacion = fechaColocacion;
-        this.fehcaRegistro = LocalDate.now();
-        this.fechaColocacion = null; 
+        this.fechaRegistro = LocalDate.now(); // Registrar la fecha actual al crear un nuevo peligro
+        this.fechaColocacion = null;
         this.zona = zona;
     }
 
-     public String getZona() {
+    // Métodos getters y setters
+
+    public String getZona() {
         return zona;
     }
 
@@ -60,32 +61,20 @@ public class Peligro {
         return fechaRegistro;
     }
 
-    public int getTiempoAproximadoReparacion() {
-        return TIEMPO_APROXIMADO_REPARACION;
-    }
-
-    public LocalDate getFechaColocacion(){
+    public LocalDate getFechaColocacion() {
         return fechaColocacion;
     }
-    
-    // Método para calcular el tiempo transcurrido desde la fecha de registro
-    public long getTiempoTranscurridoEnHoras() {
-        return ChronoUnit.DAYS.between(fechaColocacion, LocalDate.now());
-    }
 
-    // Método para enviar notificación si el peligro sigue sin reparar después del tiempo estimado
-    public void enviarNotificacionSiNecesario() {
-        if (!reparado && getTiempoTranscurridoDesdeColocacion() > TIEMPO_APROXIMADO_REPARACION) {
-            System.out.println("ALERTA: El peligro en Avenida: " + avenida + ", Calle: " + calle +
-                               " permanece sin reparar por más tiempo del estimado.");
+    public int getTiempoAproximadoReparacion(){
+        return TiempoAproximadoReparacion;
     }
 
     @Override
     public String toString() {
         return "Peligro en Avenida: " + avenida + ", Calle: " + calle + ", Descripción: " + descripcion +
-               ", Reparado: " + reparado + ", Calificación: " + calificacion +
-               ", Fecha de Colocación: " + fechaColocacion +
-               ", Tiempo Aproximado de Reparación: " + TIEMPO_APROXIMADO_REPARACION + " día(s)" +
-               ", Tiempo Transcurrido desde Colocación: " + getTiempoTranscurridoDesdeColocacion() + " día(s)";
+               ", Reparado: " + (reparado ? "Sí" : "No") + ", Calificación: " + calificacion +
+               ", Fecha de Registro: " + fechaRegistro +
+               ", Tiempo Aproximado de Reparación: " + TiempoAproximadoReparacion + " día(s)";
     }
+
 }

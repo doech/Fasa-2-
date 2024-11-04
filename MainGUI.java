@@ -66,37 +66,41 @@ public class MainGUI extends JFrame {
             }
         });
     
-        // Agregar un listener para detectar clics en el mapa
-        mapLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                Point clickPoint = e.getPoint();
-    
-                if (SwingUtilities.isRightMouseButton(e)) {
-                    // Marcar como reparado con clic derecho
-                    Graphics g = mapLabel.getGraphics();
-                    g.setColor(Color.GREEN);
-                    g.fillOval(clickPoint.x - 5, clickPoint.y - 5, 20, 20);  // Dibuja un círculo verde más grande
-                    JOptionPane.showMessageDialog(null, "Peligro marcado como reparado");
-                } else {
-                    // Reportar nuevo peligro con clic izquierdo
-                    String avenida = JOptionPane.showInputDialog("Ingrese la Avenida del peligro:");
-                    String calle = JOptionPane.showInputDialog("Ingrese la Calle del peligro:");
-                    String descripcion = JOptionPane.showInputDialog("Ingrese la Descripción del peligro:");
-    
-                    if (avenida != null && calle != null && descripcion != null) {
-                        Peligro nuevoPeligro = new Peligro(avenida, calle, descripcion);
-                        mapa.registrarPeligro(nuevoPeligro);
-                        dangerPoints.add(clickPoint);  // Añadir la posición donde se hizo clic a la lista de puntos de peligro
-                        mapLabel.repaint();  // Repintar el mapa para mostrar los marcadores
-                        } else {
-                        // Mensaje de error personalizado
-                        JOptionPane.showMessageDialog(null, "El número de calle o avenida que puso no existe.", "Error de validación", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
+       // Agregar un listener para detectar clics en el mapa
+    mapLabel.addMouseListener(new MouseAdapter() {
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        Point clickPoint = e.getPoint();
+
+        if (SwingUtilities.isRightMouseButton(e)) {
+            // Marcar como reparado con clic derecho
+            Graphics g = mapLabel.getGraphics();
+            g.setColor(Color.GREEN);
+            g.fillOval(clickPoint.x - 5, clickPoint.y - 5, 20, 20);  // Dibuja un círculo verde más grande
+            JOptionPane.showMessageDialog(null, "Peligro marcado como reparado");
+        } else {
+            // Reportar nuevo peligro con clic izquierdo
+            String avenida = JOptionPane.showInputDialog("Ingrese la Avenida del peligro:");
+            String calle = JOptionPane.showInputDialog("Ingrese la Calle del peligro:");
+            String descripcion = JOptionPane.showInputDialog("Ingrese la Descripción del peligro:");
+
+            if (avenida != null && calle != null && descripcion != null) {
+                // Asegurarse de obtener la zona del usuario actual
+                String zona = usuarioActual.getZona(); // Obtén la zona del usuario registrado
+
+                // Crear el nuevo peligro con la zona del usuario
+                Peligro nuevoPeligro = new Peligro(avenida, calle, descripcion, zona);
+                mapa.registrarPeligro(nuevoPeligro);
+                dangerPoints.add(clickPoint);  // Añadir la posición donde se hizo clic a la lista de puntos de peligro
+                mapLabel.repaint();  // Repintar el mapa para mostrar los marcadores
+            } else {
+                // Mensaje de error personalizado
+                JOptionPane.showMessageDialog(null, "El número de calle o avenida que puso no existe.", "Error de validación", JOptionPane.ERROR_MESSAGE);
             }
-        });
-    
+        }
+    }
+});
+
         // Panel principal para el mapa
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
@@ -113,7 +117,7 @@ public class MainGUI extends JFrame {
         JButton puntosButton = new JButton("Ver Puntos del Usuario");  // Mostrar los puntos del usuario
         JButton marcarReparadoConClickButton = new JButton("Marcar Reparado con Click");
         
-        buttonPanel.add(marcarReparadoConClickButton);
+        
         buttonPanel.add(reportarButton);
         buttonPanel.add(mostrarButton);
         buttonPanel.add(guardarCSVButton);
@@ -289,14 +293,16 @@ public class MainGUI extends JFrame {
                    .append(", Descripción: ").append(peligro.getDescripcion())
                    .append(", Reparado: ").append(peligro.isReparado() ? "Sí" : "No")
                    .append(", Calificación: ").append(peligro.getCalificacion())
-                   .append(", días aproximados de reparación: ").append(peligro.getTiempoAproximadoReparacion())
-                   .append(", Registrado el ").append(peligro.getFechaRegistro()) //
+                   .append(", Fecha de Registro: ").append(peligro.getFechaRegistro()) // Muestra la fecha de registro
+                   .append(", Tiempo Aproximado de Reparación: ").append(peligro.getTiempoAproximadoReparacion())
+                   .append(" día(s)") // Muestra el tiempo aproximado de reparación en días
                    .append("\n\n");
         }
         
         JOptionPane.showMessageDialog(this, mensaje.toString(), "Lista de Peligros", JOptionPane.INFORMATION_MESSAGE);
-        }
-    }   
+    }
+}
+ 
 
     // Método para guardar los peligros en un archivo CSV
     private void guardarPeligrosEnCSV() {
@@ -315,33 +321,35 @@ public class MainGUI extends JFrame {
         }
     }
 
-    //Método para cargar los peligros desde un archivo CSV al iniciar
+    // Método para cargar los peligros desde un archivo CSV al iniciar
     private void cargarPeligrosDesdeCSV() {
-        File file = new File(FILE_PATH);
-        if (!file.exists()) return;
+    File file = new File(FILE_PATH);
+    if (!file.exists()) return;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split(",");
-                if (data.length == 5) {
-                    String avenida = data[0];
-                    String calle = data[1];
-                    String descripcion = data[2];
-                    boolean reparado = Boolean.parseBoolean(data[3]);
-                    int calificacion = Integer.parseInt(data[4]);
+    try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] data = line.split(",");
+            if (data.length == 6) { // Asegurarse de que haya seis elementos en la línea
+                String avenida = data[0];
+                String calle = data[1];
+                String descripcion = data[2];
+                boolean reparado = Boolean.parseBoolean(data[3]);
+                int calificacion = Integer.parseInt(data[4]);
+                String zona = data[5]; // Leer la zona del archivo CSV
 
-                    Peligro peligro = new Peligro(avenida, calle, descripcion);
-                    peligro.setReparado(reparado);
-                    peligro.setCalificacion(calificacion);
-                    mapa.registrarPeligro(peligro);
-                }
+                // Crear el objeto Peligro usando el valor de zona del archivo
+                Peligro peligro = new Peligro(avenida, calle, descripcion, zona);
+                peligro.setReparado(reparado);
+                peligro.setCalificacion(calificacion);
+                mapa.registrarPeligro(peligro);
             }
-            System.out.println("Peligros cargados desde " + FILE_PATH);
-        } catch (IOException e) {
-            System.err.println("Error al cargar desde CSV: " + e.getMessage());
         }
+        System.out.println("Peligros cargados desde " + FILE_PATH);
+    } catch (IOException e) {
+        System.err.println("Error al cargar desde CSV: " + e.getMessage());
     }
+}
 
     //Método para repintar el mapa para marcar un peligro reparado
     private void marcarPeligroReparadoConClick() {

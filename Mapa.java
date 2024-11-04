@@ -9,13 +9,13 @@ public class Mapa {
     }
 
     public List<Peligro> getPeligrosPorZona(String zona) {
-    List<Peligro> peligrosFiltrados = new ArrayList<>();
-    for (Peligro peligro : peligros) {
-        if (peligro.getZona().equalsIgnoreCase(zona)) {
-            peligrosFiltrados.add(peligro);
+        List<Peligro> peligrosFiltrados = new ArrayList<>();
+        for (Peligro peligro : peligros) {
+            if (peligro.getZona().equalsIgnoreCase(zona)) {
+                peligrosFiltrados.add(peligro);
+            }
         }
-    }
-    return peligrosFiltrados;
+        return peligrosFiltrados;
     }
 
     // Método para registrar un nuevo peligro
@@ -62,9 +62,8 @@ public class Mapa {
         throw new IllegalArgumentException("No se encontró ningún peligro en la avenida " + avenida + " y la calle " + calle);
     }
 
-    // Método para la lista de peligros que pueden necesitar ser repintados
+    // Método para obtener la lista de peligros que pueden necesitar ser repintados
     public List<Peligro> obtenerPeligrosParaRepintado() {
         return new ArrayList<>(peligros);
     }
-
 }
