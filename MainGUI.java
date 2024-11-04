@@ -166,9 +166,17 @@ public class MainGUI extends JFrame {
             }
         });
     }
-    
-    
 
+    //Método para validar que la calle y la avenida estén dentro del rango permitido**
+    private boolean validarCalleYAvenida(String avenida, String calle) {
+        try {
+            int numAvenida = Integer.parseInt(avenida);
+            int numCalle = Integer.parseInt(calle);
+            return numAvenida >= 1 && numAvenida <= 20 && numCalle >= 1 && numCalle <= 20;
+        } catch (NumberFormatException e) {
+            return false; // Retorna falso si no es un número válido
+        }
+    }
 
     // Método para mostrar el logo radar.png en el registro de usuario
     private void mostrarDialogoCrearUsuario() {
