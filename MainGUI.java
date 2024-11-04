@@ -89,6 +89,9 @@ public class MainGUI extends JFrame {
                         mapa.registrarPeligro(nuevoPeligro);
                         dangerPoints.add(clickPoint);  // Añadir la posición donde se hizo clic a la lista de puntos de peligro
                         mapLabel.repaint();  // Repintar el mapa para mostrar los marcadores
+                        } else {
+                        // Mensaje de error personalizado
+                        JOptionPane.showMessageDialog(null, "El número de calle o avenida que puso no existe.", "Error de validación", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             }
