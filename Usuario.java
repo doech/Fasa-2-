@@ -52,16 +52,21 @@ public class Usuario {
             return usuarios; // devuelve una lista vacía si no existe el archivo
         }
 
-
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String linea;
             while ((linea = br.readLine()) != null) {
                 String[] datos = linea.split(",");
-                if (datos.length == 3) { // Validamos que tenga nombre, puntos y zona
-                    String nombre = datos[0];
-                    int puntos = Integer.parseInt(datos[1]);
-                    String zona = datos[2];
-                    usuarios.add(new Usuario(nombre, puntos, zona));
+                if (datos.length == 3) { // Validación básica del formato
+                    try {
+                        String nombre = datos[0].trim();
+                        int puntos = Integer.parseInt(datos[1].trim());
+                        String zona = datos[2].trim();
+                        usuarios.add(new Usuario(nombre, puntos, zona));
+                    } catch (NumberFormatException e) {
+                        System.err.println("Error al procesar la línea (puntos no válidos): " + linea);
+                    }
+                } else {
+                    System.err.println("Línea con formato inválido: " + linea);
                 }
             }
         } catch (IOException e) {
