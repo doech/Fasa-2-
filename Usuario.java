@@ -46,9 +46,12 @@ public class Usuario {
         List<Usuario> usuarios = new ArrayList<>();
         File file = new File(archivo);
 
+        File file = new File(archivo);
         if (!file.exists()) {
-            return usuarios; // Retorna una lista vacía si el archivo no existe
+            System.out.println("Archivo no encontrado: " + archivo);
+            return usuarios; // devuelve una lista vacía si no existe el archivo
         }
+
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String linea;
