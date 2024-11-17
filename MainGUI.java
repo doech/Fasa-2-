@@ -1,13 +1,13 @@
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import javax.swing.*;
 
 public class MainGUI extends JFrame {
     private Mapa mapa;
@@ -16,27 +16,21 @@ public class MainGUI extends JFrame {
     private Usuario usuarioActual;
     private List<Usuario> usuarios;
     private ImageIcon mapIcon;
-    private List<Point> dangerPoints; // Lista de puntos de peligros
+    private List<Point> dangerPoints;
     private JButton marcarReparadoConClickButton;
 
-    // Ruta del archivo CSV para persistencia de datos
     private static final String FILE_PATH = "peligros.csv";
-    
-    // Constructor
+    private final Color LILA_CLARO = new Color(221, 160, 221);
+    private final Color LILA_OSCURO = new Color(153, 50, 204);
+
     public MainGUI() {
         mapa = new Mapa();
         usuarios = new ArrayList<>();
-        dangerPoints = new ArrayList<>();  // Lista para almacenar las posiciones de los peligros
+        dangerPoints = new ArrayList<>();
         setTitle("Sistema de Detección de Baches y Peligros");
         setSize(1000, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-
-        //Cargar peligros desde el archivo CSV al iniciar
-        cargarPeligrosDesdeCSV();
-    
-        // Crear un usuario al inicio
-        mostrarDialogoCrearUsuario();
     
         // Inicializar el mapa con una imagen predeterminada
         mapIcon = new ImageIcon("mapa.png");
@@ -44,21 +38,25 @@ public class MainGUI extends JFrame {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.setColor(Color.RED);  // Color para los marcadores de peligro
-    
-                // Dibujar los peligros almacenados en la lista
+                g.setColor(Color.RED);
                 for (Point point : dangerPoints) {
-                    g.fillOval(point.x, point.y, 10, 10);  // Dibujar un círculo en cada punto de peligro
+                    g.fillOval(point.x, point.y, 10, 10);
                 }
             }
         };
     
-        // Cargar el mapa según la zona del usuario
-        if (usuarioActual != null) {
-            cargarMapaPorZona(usuarioActual.getZona());
-        }
-
-        //Guardar los peligros en CSV al cerrar la ventana
+        // Panel principal para el mapa
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.add(mapLabel, BorderLayout.CENTER);
+        add(mainPanel, BorderLayout.CENTER);
+    
+        // Cargar peligros desde el archivo CSV al iniciar
+        cargarPeligrosDesdeCSV();
+    
+        // Crear un usuario al inicio
+        mostrarDialogoCrearUsuario();
+    
+        // Configurar eventos para cerrar la ventana
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -66,205 +64,162 @@ public class MainGUI extends JFrame {
             }
         });
     
-       // Agregar un listener para detectar clics en el mapa
-    mapLabel.addMouseListener(new MouseAdapter() {
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        Point clickPoint = e.getPoint();
-
-        if (SwingUtilities.isRightMouseButton(e)) {
-            // Marcar como reparado con clic derecho
-            Graphics g = mapLabel.getGraphics();
-            g.setColor(Color.GREEN);
-            g.fillOval(clickPoint.x - 5, clickPoint.y - 5, 20, 20);  // Dibuja un círculo verde más grande
-            JOptionPane.showMessageDialog(null, "Peligro marcado como reparado");
-        } else {
-            // Reportar nuevo peligro con clic izquierdo
-            String avenida = JOptionPane.showInputDialog("Ingrese la Avenida del peligro:");
-            String calle = JOptionPane.showInputDialog("Ingrese la Calle del peligro:");
-            String descripcion = JOptionPane.showInputDialog("Ingrese la Descripción del peligro:");
-
-            if (avenida != null && calle != null && descripcion != null) {
-                // Asegurarse de obtener la zona del usuario actual
-                String zona = usuarioActual.getZona(); // Obtén la zona del usuario registrado
-
-                // Crear el nuevo peligro con la zona del usuario
-                Peligro nuevoPeligro = new Peligro(avenida, calle, descripcion, zona);
-                mapa.registrarPeligro(nuevoPeligro);
-                dangerPoints.add(clickPoint);  // Añadir la posición donde se hizo clic a la lista de puntos de peligro
-                mapLabel.repaint();  // Repintar el mapa para mostrar los marcadores
-            } else {
-                // Mensaje de error personalizado
-                JOptionPane.showMessageDialog(null, "El número de calle o avenida que puso no existe.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+        // Configurar clics en el mapa
+        mapLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Point clickPoint = e.getPoint();
+        
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    // Marcar como reparado con clic derecho
+                    Graphics g = mapLabel.getGraphics();
+                    g.setColor(Color.GREEN);
+                    g.fillOval(clickPoint.x - 5, clickPoint.y - 5, 20, 20);  // Dibuja un círculo verde más grande
+                    JOptionPane.showMessageDialog(null, "Peligro marcado como reparado");
+                } else {
+                    // Reportar nuevo peligro con clic izquierdo
+                    String avenida = JOptionPane.showInputDialog("Ingrese la Avenida del peligro:");
+                    String calle = JOptionPane.showInputDialog("Ingrese la Calle del peligro:");
+                    String descripcion = JOptionPane.showInputDialog("Ingrese la Descripción del peligro:");
+        
+                    if (avenida != null && calle != null && descripcion != null) {
+                        // Asegurarse de obtener la zona del usuario actual
+                        String zona = usuarioActual.getZona(); // Obtén la zona del usuario registrado
+        
+                        // Crear el nuevo peligro con la zona del usuario
+                        Peligro nuevoPeligro = new Peligro(avenida, calle, descripcion, zona);
+                        mapa.registrarPeligro(nuevoPeligro);
+                        dangerPoints.add(clickPoint);  // Añadir la posición donde se hizo clic a la lista de puntos de peligro
+                        mapLabel.repaint();  // Repintar el mapa para mostrar los marcadores
+                    } else {
+                        // Mensaje de error personalizado
+                        JOptionPane.showMessageDialog(null, "El número de calle o avenida que puso no existe.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
             }
-        }
-    }
-});
-
-        // Panel principal para el mapa
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
-        mainPanel.add(mapLabel, BorderLayout.CENTER);
+        });
     
-        // Panel de botones en la parte inferior
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-    
-        JButton reportarButton = new JButton("Reportar Peligro");
-        JButton mostrarButton = new JButton("Mostrar Peligros");
-        JButton guardarCSVButton = new JButton("Guardar en CSV");
-        JButton calificarButton = new JButton("Calificar Reparación");
-        JButton puntosButton = new JButton("Ver Puntos del Usuario");  // Mostrar los puntos del usuario
-        JButton marcarReparadoConClickButton = new JButton("Marcar Reparado con Click");
-        
-        
-        buttonPanel.add(reportarButton);
-        buttonPanel.add(mostrarButton);
-        buttonPanel.add(guardarCSVButton);
-        buttonPanel.add(calificarButton);
-        buttonPanel.add(puntosButton);  // Botón para ver los puntos del usuario
-        buttonPanel.add(marcarReparadoConClickButton); //marcar peligro reparado con click
-    
-        // Añadir el panel de botones al panel principal en la parte inferior
+        // Añadir botones
+        JPanel buttonPanel = crearPanelBotones();
         add(buttonPanel, BorderLayout.SOUTH);
     
         // Área de texto para mostrar peligros
         displayArea = new JTextArea();
         displayArea.setEditable(false);
+        displayArea.setFont(new Font("Arial", Font.PLAIN, 14));
+        displayArea.setBackground(new Color(221, 160, 221));
+        displayArea.setForeground(new Color(153, 50, 204));
         JScrollPane scrollPane = new JScrollPane(displayArea);
         add(scrollPane, BorderLayout.EAST);
+    }
     
-        // Añadir el panel principal con el mapa
-        add(mainPanel, BorderLayout.CENTER);
-    
-        // Agregar listeners para los botones
-        reportarButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Haga clic en el mapa para reportar el peligro.");  // Mensaje de instrucción
-            }
-        });
-    
-        mostrarButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                mostrarPeligros();  // Llamamos al método para mostrar los peligros
-            }
-        });
-    
-        guardarCSVButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                guardarPeligrosEnCSV();  // Guardar los peligros en un archivo CSV
-            }
-        });
-    
-        calificarButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                calificarReparacion();  // Calificar reparación del peligro
-            }
-        });
-    
-        puntosButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                mostrarPuntosUsuario();  // Mostrar puntos del usuario
-            }
-        });
-        marcarReparadoConClickButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                marcarPeligroReparadoConClick();  // Llama al método para marcar peligro reparado con clic
-            }
-        });
+
+    private JPanel crearPanelBotones() {
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setBackground(LILA_CLARO);
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
+
+        JButton reportarButton = crearBoton("Reportar Peligro");
+        JButton mostrarButton = crearBoton("Mostrar Peligros");
+        marcarReparadoConClickButton = crearBoton("Marcar Reparado con Click");
+        JButton calificarButton = crearBoton("Calificar Reparación");
+        JButton puntosButton = crearBoton("Ver Puntos del Usuario");
+        JButton guardarCSVButton = crearBoton("Guardar en CSV");
+
+        buttonPanel.add(reportarButton);
+        buttonPanel.add(mostrarButton);
+        buttonPanel.add(marcarReparadoConClickButton);
+        buttonPanel.add(calificarButton);
+        buttonPanel.add(puntosButton);
+        buttonPanel.add(guardarCSVButton);
+
+        reportarButton.addActionListener(e -> JOptionPane.showMessageDialog(this, "Haga clic en el mapa para reportar el peligro."));
+        mostrarButton.addActionListener(e -> mostrarPeligros());
+        marcarReparadoConClickButton.addActionListener(e -> marcarPeligroReparadoConClick());
+        calificarButton.addActionListener(e -> calificarReparacion());
+        puntosButton.addActionListener(e -> mostrarPuntosUsuario());
+        guardarCSVButton.addActionListener(e -> guardarPeligrosEnCSV());
+        return buttonPanel;
     }
 
-    //Método para validar que la calle y la avenida estén dentro del rango permitido**
-    private boolean validarCalleYAvenida(String avenida, String calle) {
-        try {
-            int numAvenida = Integer.parseInt(avenida);
-            int numCalle = Integer.parseInt(calle);
-            return numAvenida >= 1 && numAvenida <= 20 && numCalle >= 1 && numCalle <= 20;
-        } catch (NumberFormatException e) {
-            return false; // Retorna falso si no es un número válido
-        }
+    private JButton crearBoton(String texto) {
+        JButton boton = new JButton(texto);
+        boton.setBackground(LILA_OSCURO);
+        boton.setForeground(Color.WHITE);
+        boton.setFont(new Font("Arial", Font.BOLD, 14));
+        boton.setFocusPainted(false);
+        return boton;
     }
 
-    // Método para mostrar el logo radar.png en el registro de usuario
+    
+    
+
     private void mostrarDialogoCrearUsuario() {
-    JPanel panel = new JPanel(new GridBagLayout());
-    GridBagConstraints gbc = new GridBagConstraints();
-    gbc.insets = new Insets(5, 5, 5, 5);
-    gbc.fill = GridBagConstraints.HORIZONTAL;
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-    // Agregar el logo en la parte superior
-    ImageIcon logoIcon = new ImageIcon("radar.png");
-    Image logoImage = logoIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);  // Escalar la imagen
-    logoIcon = new ImageIcon(logoImage);
-    JLabel logoLabel = new JLabel(logoIcon);
-    gbc.gridx = 0;
-    gbc.gridy = 0;
-    gbc.gridwidth = 2;  // El logo ocupa dos columnas
-    panel.add(logoLabel, gbc);
+        JLabel logoLabel = new JLabel(new ImageIcon("radar.png"));
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        panel.add(logoLabel, gbc);
 
-    // Campos de texto para la creación de usuario
-    gbc.gridwidth = 1;  // Volver a una columna por componente
-    gbc.gridx = 0;
-    gbc.gridy = 1;
-    panel.add(new JLabel("Nombre:"), gbc);
+        gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panel.add(new JLabel("Nombre:"), gbc);
 
-    JTextField nombreField = new JTextField(15);
-    gbc.gridx = 1;
-    gbc.gridy = 1;
-    panel.add(nombreField, gbc);
+        JTextField nombreField = new JTextField(15);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        panel.add(nombreField, gbc);
 
-    gbc.gridx = 0;
-    gbc.gridy = 2;
-    panel.add(new JLabel("Zona:"), gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        panel.add(new JLabel("Zona:"), gbc);
 
-    JTextField zonaField = new JTextField(15);
-    gbc.gridx = 1;
-    gbc.gridy = 2;
-    panel.add(zonaField, gbc);
+        JTextField zonaField = new JTextField(15);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        panel.add(zonaField, gbc);
 
-    int result = JOptionPane.showConfirmDialog(null, panel, "Crear Usuario", JOptionPane.OK_CANCEL_OPTION);
-    if (result == JOptionPane.OK_OPTION) {
-        String nombre = nombreField.getText();
-        String zona = zonaField.getText();
+        int result = JOptionPane.showConfirmDialog(this, panel, "Crear Usuario", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            String nombre = nombreField.getText();
+            String zona = zonaField.getText();
 
-        if (!nombre.isEmpty() && !zona.isEmpty()) {
-            // Crear el usuario con la zona especificada
-            Usuario nuevoUsuario = new Usuario(nombre, "Avenida N/A", "Calle N/A", zona);
-            usuarios.add(nuevoUsuario);
-            usuarioActual = nuevoUsuario;
-            JOptionPane.showMessageDialog(null, "Usuario creado: " + nombre);
-        } else {
-            JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios.");
+            if (!nombre.isEmpty() && !zona.isEmpty()) {
+                usuarioActual = new Usuario(nombre, "Avenida N/A", "Calle N/A", zona);
+                usuarios.add(usuarioActual);
+                cargarMapaPorZona(zona);
+                JOptionPane.showMessageDialog(this, "Usuario creado: " + nombre);
+            } else {
+                JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.");
+            }
         }
     }
-}
 
-    
-    //Metodo para cargar mapa por zona
     private void cargarMapaPorZona(String zona) {
         String nombreMapa;
-    
-        // Seleccionar el archivo de mapa según la zona ingresada
-        if (zona.equals("14")) {
+
+        if ("14".equals(zona)) {
             nombreMapa = "mapa14.png";
-        } else if (zona.equals("15")) {
+        } else if ("15".equals(zona)) {
             nombreMapa = "mapa15.png";
-        } else if (zona.equals("16")) {
+        } else if ("16".equals(zona)) {
             nombreMapa = "mapa16.png";
         } else {
-            // Mapa predeterminado si la zona no es una de las esperadas
             nombreMapa = "mapa.png";
             JOptionPane.showMessageDialog(this, "Zona no reconocida. Cargando mapa predeterminado.");
         }
-    
-        // Cargar la imagen del mapa y establecer el icono en `mapLabel`
+
         mapIcon = new ImageIcon(nombreMapa);
         mapLabel.setIcon(mapIcon);
     }
-    
-    
 
-
+    
     // Método para mostrar los puntos del usuario actual
     private void mostrarPuntosUsuario() {
         if (usuarioActual != null) {
@@ -482,13 +437,7 @@ public class MainGUI extends JFrame {
             }
         }
     }
-
-    // Método main para ejecutar la aplicación
     public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new MainGUI().setVisible(true);
-            }
-        });
+        SwingUtilities.invokeLater(() -> new MainGUI().setVisible(true));
     }
 }
