@@ -82,9 +82,10 @@ public class Usuario {
                 writer.write(usuario.toString() + "\n");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Error al guardar el archivo: " + e.getMessage());
         }
     }
+
 
     public static Usuario iniciarSesion(List<Usuario> usuarios) {
         String nombre = JOptionPane.showInputDialog("Ingrese su nombre para iniciar sesión:");
