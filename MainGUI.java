@@ -34,7 +34,10 @@ public class MainGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        
+//Cargar las calles desde los archivos CSV
+        calles.cargarCallesDesdeCSV("Calles_zona14.csv");
+        calles.cargarCallesDesdeCSV("Calles_zona15.csv");
+        calles.cargarCallesDesdeCSV("Calles_zona16.csv");        
     
         // Inicializar el mapa con una imagen predeterminada
         mapIcon = new ImageIcon("mapa.png");
