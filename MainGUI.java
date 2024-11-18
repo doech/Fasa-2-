@@ -109,7 +109,7 @@ public class MainGUI extends JFrame {
                     String calle = JOptionPane.showInputDialog("Ingrese la Calle del peligro:");
 
                     if (avenida != null && calle != null) {
-                        if (calles.validarCalle(calle)) { // MODIFICACIÓN: Validación con Calles
+                        if (calles.validarCalle(calle)) { // Validación con Calles
                             String descripcion = JOptionPane.showInputDialog("Ingrese la Descripción del peligro:");
                             if (descripcion != null) {
                                 String zona = usuarioActual.getZona(); // Zona del usuario actual
