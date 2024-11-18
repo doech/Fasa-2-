@@ -13,8 +13,8 @@ public class Calles {
         try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
             String linea;
             while ((linea = br.readLine()) != null) {
-                String[] datos = linea.split(","); // Asumimos que cada línea del archivo tiene una calle
-                if (datos.length == 1) { // Validamos que sea una línea válida
+                String[] datos = linea.split(","); // Cada línea del archivo tiene una calle
+                if (datos.length == 1) { // Se confirma que sea una línea válida
                     String calle = datos[0].trim(); // Remover espacios extra
                     callesPorZona.computeIfAbsent("General", k -> new ArrayList<>()).add(calle); // Agregar la calle al mapa
                 }

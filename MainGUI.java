@@ -13,6 +13,7 @@ public class MainGUI extends JFrame {
     private Mapa mapa;
     private JTextArea displayArea;
     private JLabel mapLabel;
+    private static final String USUARIOS_CSV = "usuarios.csv";
     private Usuario usuarioActual;
     private List<Usuario> usuarios;
     private ImageIcon mapIcon;
@@ -26,13 +27,30 @@ public class MainGUI extends JFrame {
 
     public MainGUI() {
         mapa = new Mapa();
-        usuarios = new ArrayList<>();
+        verificarArchivoUsuarios();
+        usuarios = Usuario.cargarUsuariosDesdeCSV(USUARIOS_CSV); // Cargar los usuarios desde el archivo CSV
         dangerPoints = new ArrayList<>();
         calles = new Calles();
+
+         // Verificar si el usuario puede iniciar sesión o necesita registrarse
+         usuarioActual = Usuario.iniciarSesion(usuarios);
+         if (usuarioActual == null) { // Si no hay usuario registrado, solicitar registro
+             usuarioActual = mostrarDialogoCrearUsuario();
+             if (usuarioActual != null) {
+                 usuarios.add(usuarioActual);
+                 Usuario.guardarUsuariosEnCSV(USUARIOS_CSV, usuarios); // Guardar el nuevo usuario en el CSV
+             } else {
+                 JOptionPane.showMessageDialog(null, "Es obligatorio registrar un usuario para continuar.");
+                 System.exit(0); // Cerrar el programa si no se registra un usuario
+             }
+         }
+
         setTitle("Sistema de Detección de Baches y Peligros");
+        setTitle("RADAR");
         setSize(1000, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+
 
 //Cargar las calles desde los archivos CSV
         calles.cargarCallesDesdeCSV("Calles_zona14.csv");
@@ -40,6 +58,8 @@ public class MainGUI extends JFrame {
         calles.cargarCallesDesdeCSV("Calles_zona16.csv");        
     
         // Inicializar el mapa con una imagen predeterminada
+
+        // Inicializar el mapa
         mapIcon = new ImageIcon("mapa.png");
         mapLabel = new JLabel(mapIcon) {
             @Override
@@ -47,22 +67,22 @@ public class MainGUI extends JFrame {
                 super.paintComponent(g);
                 g.setColor(Color.RED);
                 for (Point point : dangerPoints) {
-                    g.fillOval(point.x, point.y, 10, 10);
+                    g.fillOval(point.x, point.y, 10, 10); // Dibujar peligros como puntos rojos
                 }
             }
         };
+
+        // Cargar peligros desde el archivo CSV
+        cargarPeligrosDesdeCSV();
+
+        // Mostrar los peligros de la zona del usuario
+        cargarMapaPorZona(usuarioActual.getZona());
     
         // Panel principal para el mapa
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.add(mapLabel, BorderLayout.CENTER);
         add(mainPanel, BorderLayout.CENTER);
-    
-        // Cargar peligros desde el archivo CSV al iniciar
-        cargarPeligrosDesdeCSV();
-    
-        // Crear un usuario al inicio
-        mostrarDialogoCrearUsuario();
-    
+
         // Configurar eventos para cerrar la ventana
         addWindowListener(new WindowAdapter() {
             @Override
@@ -171,53 +191,62 @@ public class MainGUI extends JFrame {
             }
         }
     }
+
     
-    private void mostrarDialogoCrearUsuario() {
+    private Usuario mostrarDialogoCrearUsuario() {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        JLabel logoLabel = new JLabel(new ImageIcon("radar.png"));
+    
+        // Logo
+        ImageIcon logoIcon = new ImageIcon("radar.png");
+        Image logoImage = logoIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        logoIcon = new ImageIcon(logoImage);
+        JLabel logoLabel = new JLabel(logoIcon);
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
         panel.add(logoLabel, gbc);
-
+    
+        // Campos de entrada
         gbc.gridwidth = 1;
         gbc.gridx = 0;
         gbc.gridy = 1;
         panel.add(new JLabel("Nombre:"), gbc);
-
+    
         JTextField nombreField = new JTextField(15);
         gbc.gridx = 1;
         gbc.gridy = 1;
         panel.add(nombreField, gbc);
-
+    
         gbc.gridx = 0;
         gbc.gridy = 2;
         panel.add(new JLabel("Zona:"), gbc);
-
-        JTextField zonaField = new JTextField(15);
+    
+        JComboBox<String> zonaBox = new JComboBox<>(new String[]{"14", "15", "16"});
         gbc.gridx = 1;
         gbc.gridy = 2;
-        panel.add(zonaField, gbc);
-
-        int result = JOptionPane.showConfirmDialog(this, panel, "Crear Usuario", JOptionPane.OK_CANCEL_OPTION);
+        panel.add(zonaBox, gbc);
+    
+        // Mostrar el diálogo
+        int result = JOptionPane.showConfirmDialog(this, panel, "Registrar Usuario", JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
             String nombre = nombreField.getText();
-            String zona = zonaField.getText();
-
-            if (!nombre.isEmpty() && !zona.isEmpty()) {
-                usuarioActual = new Usuario(nombre, "Avenida N/A", "Calle N/A", zona);
-                usuarios.add(usuarioActual);
-                cargarMapaPorZona(zona);
-                JOptionPane.showMessageDialog(this, "Usuario creado: " + nombre);
+            String zona = (String) zonaBox.getSelectedItem();
+    
+            if (!nombre.isEmpty() && zona != null) {
+                return new Usuario(nombre, 0, zona);
             } else {
                 JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.");
             }
         }
+        return null; // Si el usuario cancela el registro
     }
+    
+    
+    
+    
 
     private void cargarMapaPorZona(String zona) {
         String nombreMapa;
@@ -235,18 +264,29 @@ public class MainGUI extends JFrame {
 
         mapIcon = new ImageIcon(nombreMapa);
         mapLabel.setIcon(mapIcon);
+        
     }
 
     
     // Método para mostrar los puntos del usuario actual
     private void mostrarPuntosUsuario() {
         if (usuarioActual != null) {
-            JOptionPane.showMessageDialog(null, "Tus puntos actuales son: " + usuarioActual.getPuntos());
+            JOptionPane.showMessageDialog(this, 
+                "Tus puntos actuales son: " + usuarioActual.getPuntos(), 
+                "Puntos del Usuario", 
+                JOptionPane.INFORMATION_MESSAGE
+            );
         } else {
-            JOptionPane.showMessageDialog(null, "No hay usuario registrado.");
+            JOptionPane.showMessageDialog(this, 
+                "No se encontró un usuario activo.", 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE
+            );
         }
     }
+    
 
+    
     // Método para reportar un peligro
     private void reportarPeligro() {
         JOptionPane.showMessageDialog(null, "Haga clic en el mapa para reportar el peligro.");
@@ -280,50 +320,81 @@ public class MainGUI extends JFrame {
     // Método para guardar los peligros en un archivo CSV
     private void guardarPeligrosEnCSV() {
         File file = new File(FILE_PATH);
-        file.getParentFile().mkdirs();  // Crear las carpetas si no existen
-
+        file.getParentFile().mkdirs(); // Crear las carpetas si no existen
+    
         try (FileWriter writer = new FileWriter(file)) {
-            List<Peligro> peligros = mapa.getPeligros();
-            for (Peligro peligro : peligros) {
-                writer.write(peligro.getAvenida() + "," + peligro.getCalle() + "," + peligro.getDescripcion() + "," + peligro.isReparado() + "," + peligro.getCalificacion() + "\n");
+            for (Peligro peligro : mapa.getPeligros()) {
+                String avenida = peligro.getAvenida();
+                String calle = peligro.getCalle();
+                String descripcion = peligro.getDescripcion();
+                boolean reparado = peligro.isReparado();
+                int calificacion = peligro.getCalificacion();
+                String zona = peligro.getZona();
+                Point coordenadas = obtenerCoordenadasDesdeCalle(avenida, calle); // coordenadas
+                int x = coordenadas != null ? coordenadas.x : -1; // Coordenada X
+                int y = coordenadas != null ? coordenadas.y : -1; // Coordenada Y
+                
+                writer.write(String.join(",", avenida, calle, descripcion, String.valueOf(reparado), 
+                                           String.valueOf(calificacion), zona, String.valueOf(x), 
+                                           String.valueOf(y)) + "\n");
             }
-            JOptionPane.showMessageDialog(null, "Peligros guardados en " + FILE_PATH);
+            JOptionPane.showMessageDialog(this, "Peligros guardados en " + FILE_PATH);
         } catch (IOException e) {
-            e.printStackTrace();  // Imprime el error en la consola para depuración
-            JOptionPane.showMessageDialog(null, "Error al guardar en CSV: " + e.getMessage());
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al guardar en CSV: " + e.getMessage());
         }
     }
+    
 
+    private Point obtenerCoordenadasDesdeCalle(String avenida, String calle) {
+        try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+                if (data.length >= 8) { // Confirma que en el archivo hay 8 campos o columnas
+                    String avenidaCsv = data[0];
+                    String calleCsv = data[1];
+                    int x = Integer.parseInt(data[6]); // Columna de coordenada x
+                    int y = Integer.parseInt(data[7]); // Columna de coordenada y
+    
+                    // Comparar con los datos proporcionados
+                    if (avenidaCsv.equals(avenida) && calleCsv.equals(calle)) {
+                        return new Point(x, y);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al leer el archivo de peligros.");
+        }
+        return null; // Si no se encuentra la combinación
+    }
+    
     // Método para cargar los peligros desde un archivo CSV al iniciar
     private void cargarPeligrosDesdeCSV() {
-    File file = new File(FILE_PATH);
-    if (!file.exists()) return;
-
-    try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-        String line;
-        while ((line = br.readLine()) != null) {
-            String[] data = line.split(",");
-            if (data.length == 6) { // Asegurarse de que haya seis elementos en la línea
-                String avenida = data[0];
-                String calle = data[1];
-                String descripcion = data[2];
-                boolean reparado = Boolean.parseBoolean(data[3]);
-                int calificacion = Integer.parseInt(data[4]);
-                String zona = data[5]; // Leer la zona del archivo CSV
-
-                // Crear el objeto Peligro usando el valor de zona del archivo
-                Peligro peligro = new Peligro(avenida, calle, descripcion, zona);
-                peligro.setReparado(reparado);
-                peligro.setCalificacion(calificacion);
-                mapa.registrarPeligro(peligro);
+        try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
+            String line;
+            line = br.readLine(); // Leer y descartar la primera línea
+    
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+                if (data.length >= 8) {
+                    boolean reparado = Boolean.parseBoolean(data[3]);
+                    if (!reparado) { // Solo los no reparados
+                        int x = Integer.parseInt(data[6].trim());
+                        int y = Integer.parseInt(data[7].trim());
+                        dangerPoints.add(new Point(x, y));
+                    }
+                }
             }
+            mapLabel.repaint(); // Repintar el mapa
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al cargar peligros desde el archivo.");
         }
-        System.out.println("Peligros cargados desde " + FILE_PATH);
-    } catch (IOException e) {
-        System.err.println("Error al cargar desde CSV: " + e.getMessage());
     }
-}
-
+    
+    
     //Método para repintar el mapa para marcar un peligro reparado
     private void marcarPeligroReparadoConClick() {
         JTextField avenidaField = new JTextField(15);

@@ -45,8 +45,6 @@ public class Usuario {
     public static List<Usuario> cargarUsuariosDesdeCSV(String archivo) {
         List<Usuario> usuarios = new ArrayList<>();
         File file = new File(archivo);
-
-        File file = new File(archivo);
         if (!file.exists()) {
             System.out.println("Archivo no encontrado: " + archivo);
             return usuarios; // devuelve una lista vacía si no existe el archivo
