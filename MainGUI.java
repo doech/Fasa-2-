@@ -84,23 +84,26 @@ public class MainGUI extends JFrame {
                     g.fillOval(clickPoint.x - 5, clickPoint.y - 5, 20, 20);  // Dibuja un círculo verde más grande
                     JOptionPane.showMessageDialog(null, "Peligro marcado como reparado");
                 } else {
-                    // Reportar nuevo peligro con clic izquierdo
+                    //Validar calles al reportar un peligro
                     String avenida = JOptionPane.showInputDialog("Ingrese la Avenida del peligro:");
                     String calle = JOptionPane.showInputDialog("Ingrese la Calle del peligro:");
-                    String descripcion = JOptionPane.showInputDialog("Ingrese la Descripción del peligro:");
-        
-                    if (avenida != null && calle != null && descripcion != null) {
-                        // Asegurarse de obtener la zona del usuario actual
-                        String zona = usuarioActual.getZona(); // Obtén la zona del usuario registrado
-        
-                        // Crear el nuevo peligro con la zona del usuario
-                        Peligro nuevoPeligro = new Peligro(avenida, calle, descripcion, zona);
-                        mapa.registrarPeligro(nuevoPeligro);
-                        dangerPoints.add(clickPoint);  // Añadir la posición donde se hizo clic a la lista de puntos de peligro
-                        mapLabel.repaint();  // Repintar el mapa para mostrar los marcadores
+
+                    if (avenida != null && calle != null) {
+                        if (calles.validarCalle(calle)) { // MODIFICACIÓN: Validación con Calles
+                            String descripcion = JOptionPane.showInputDialog("Ingrese la Descripción del peligro:");
+                            if (descripcion != null) {
+                                String zona = usuarioActual.getZona(); // Zona del usuario actual
+                                Peligro nuevoPeligro = new Peligro(avenida, calle, descripcion, zona);
+                                mapa.registrarPeligro(nuevoPeligro);
+                                dangerPoints.add(clickPoint); // Añadir el punto al mapa
+                                mapLabel.repaint(); // Repintar el mapa
+                            }
+                        } else {
+                            //Mensaje de error si la calle no existe
+                            JOptionPane.showMessageDialog(null, "La calle ingresada no existe.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+                        }
                     } else {
-                        // Mensaje de error personalizado
-                        JOptionPane.showMessageDialog(null, "El número de calle o avenida que puso no existe.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Debe ingresar una avenida y calle válidas.", "Error de validación", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             }
