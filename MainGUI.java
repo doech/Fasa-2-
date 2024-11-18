@@ -161,9 +161,17 @@ public class MainGUI extends JFrame {
         return boton;
     }
 
+    private void verificarArchivoUsuarios() {
+        File file = new File(USUARIOS_CSV);
+        if (!file.exists()) {
+            try (FileWriter writer = new FileWriter(file)) {
+                writer.write("nombre,zona,puntos\n"); // Encabezados del archivo
+            } catch (IOException e) {
+                System.err.println("Error al crear el archivo de usuarios: " + e.getMessage());
+            }
+        }
+    }
     
-    
-
     private void mostrarDialogoCrearUsuario() {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
