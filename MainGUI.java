@@ -18,6 +18,7 @@ public class MainGUI extends JFrame {
     private ImageIcon mapIcon;
     private List<Point> dangerPoints;
     private JButton marcarReparadoConClickButton;
+    private Calles calles;
 
     private static final String FILE_PATH = "peligros.csv";
     private final Color LILA_CLARO = new Color(221, 160, 221);
@@ -27,10 +28,13 @@ public class MainGUI extends JFrame {
         mapa = new Mapa();
         usuarios = new ArrayList<>();
         dangerPoints = new ArrayList<>();
+        calles = new Calles();
         setTitle("Sistema de Detección de Baches y Peligros");
         setSize(1000, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+
+        
     
         // Inicializar el mapa con una imagen predeterminada
         mapIcon = new ImageIcon("mapa.png");
